@@ -63,7 +63,7 @@ export function minifyTemplates(buildResult: BuildResult): BuildResult {
       );
 
       if (matchingMapIndex > -1) {
-        const mapFile = buildResult.outputFiles![matchingMapIndex];
+        const mapFile = outputFiles[matchingMapIndex];
         const remapped = remapping(
           [
             // our source map from minifying
