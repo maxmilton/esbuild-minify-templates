@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 
 import remapping from '@ampproject/remapping';
-import * as astray from 'astray';
+import { walk } from 'astray';
 import type { BuildResult } from 'esbuild';
 import fs from 'fs';
 import MagicString from 'magic-string';
@@ -47,7 +47,7 @@ export function minifyTemplates(buildResult: BuildResult): BuildResult {
         loc: true,
       });
 
-      astray.walk(ast, {
+      walk(ast, {
         TemplateElement(node) {
           const { start, end } = node.loc!;
 
