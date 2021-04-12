@@ -1,0 +1,50 @@
+{
+  "name": "esbuild-minify-templates",
+  "version": "0.0.0",
+  "description": "Minify HTML in template literal strings in an esbuild build",
+  "license": "MIT",
+  "repository": "https://github.com/MaxMilton/esbuild-minify-templates",
+  "author": "Max Milton <max@happycode.ltd>",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "NODE_ENV=production tsc",
+    "dev": "NODE_ENV=development tsc --watch --preserveWatchOutput",
+    "lint": "yarn run lint:js && yarn run lint:ts",
+    "lint:js": "eslint --ignore-path .gitignore --ext .ts,.js,.mjs,.cjs .",
+    "lint:ts": "tsc --noEmit",
+    "prebuild": "rm -rf dist; mkdir dist",
+    "test": "echo 'TODO: Testing'; exit 0"
+  },
+  "peerDependencies": {
+    "esbuild": "^0.11.0"
+  },
+  "dependencies": {
+    "@ampproject/remapping": "^1.0.1",
+    "astray": "^1.1.1",
+    "magic-string": "^0.25.7",
+    "meriyah": "^4.1.5"
+  },
+  "devDependencies": {
+    "@types/node": "14.14.37",
+    "@typescript-eslint/eslint-plugin": "4.21.0",
+    "@typescript-eslint/parser": "4.21.0",
+    "esbuild": "0.11.8",
+    "eslint": "7.24.0",
+    "eslint-config-airbnb-typescript": "12.3.1",
+    "eslint-plugin-import": "2.22.1",
+    "prettier": "2.2.1",
+    "typescript": "4.2.4"
+  },
+  "prettier": {
+    "arrowParens": "always",
+    "endOfLine": "lf",
+    "singleQuote": true,
+    "trailingComma": "all"
+  },
+  "renovate": {
+    "extends": [
+      "@wearegenki"
+    ]
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "editor.codeActionsOnSave": [
+    // "source.organizeImports",
+    "source.fixAll.format",
+    "source.fixAll.eslint",
+    "source.fixAll.stylelint"
+  ],
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": false,
+  "js/ts.implicitProjectConfig.checkJs": true
+}
