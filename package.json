@@ -7,6 +7,9 @@
   "author": "Max Milton <max@happycode.ltd>",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "NODE_ENV=production tsc",
     "dev": "NODE_ENV=development tsc --watch --preserveWatchOutput",
