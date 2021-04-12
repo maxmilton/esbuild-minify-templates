@@ -12,20 +12,6 @@ function handleErr(err?: Error | null) {
   if (err) throw err;
 }
 
-// /**
-//  * Check if a file exists.
-//  * @param {string} filePath
-//  * @return {boolean}
-//  */
-// function pathExistsSync(filePath) {
-//   try {
-//     fs.accessSync(filePath);
-//     return true;
-//   } catch (err) {
-//     return false;
-//   }
-// }
-
 function getCharLoc(source: string, line: number, column: number): number {
   return (
     source
@@ -78,9 +64,9 @@ export function minifyTemplates(buildResult: BuildResult): BuildResult {
 
       if (matchingMapIndex > -1) {
         const mapFile = buildResult.outputFiles![matchingMapIndex];
-        // const sourceDir = path.dirname(mapFile.path);
         const remapped = remapping(
           [
+            // our source map from minifying
             {
               ...out.generateDecodedMap({
                 source: file.path,
@@ -89,20 +75,11 @@ export function minifyTemplates(buildResult: BuildResult): BuildResult {
               }),
               version: 3,
             },
+            // esbuild generated source map
             mapFile.text,
           ],
+          // don't load other source maps; referenced files are the original source
           () => null,
-          // FIXME: Do we need this loader? Doesn't esbuild already do this to create its .map?
-          // (mapPath) => {
-          //   const fullPath = path.resolve(sourceDir, `${mapPath}.map`);
-          //   const exists = pathExistsSync(fullPath);
-          //
-          //   if (exists) {
-          //     return fs.readFileSync(fullPath, 'utf8');
-          //   }
-          //
-          //   return null;
-          // },
         );
 
         buildResult.outputFiles![matchingMapIndex].contents = Buffer.from(
