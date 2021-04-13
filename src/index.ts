@@ -1,5 +1,9 @@
 /* eslint-disable no-param-reassign */
 
+// TODO: There's a chance code might use a template literal to construct a
+// RegExp and this tool could break the regex... how to avoid? Options with
+// exclude files filter?
+
 import remapping from '@ampproject/remapping';
 import { walk } from 'astray';
 import type { BuildResult } from 'esbuild';
