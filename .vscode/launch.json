@@ -1,0 +1,28 @@
+// https://code.visualstudio.com/docs/editor/debugging#_launch-configurations
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Attach by Process ID",
+      "processId": "${command:PickProcess}",
+      "request": "attach",
+      "skipFiles": ["<node_internals>/**"],
+      // "smartStep": true,
+      "type": "pwa-node"
+    },
+    // https://github.com/Microsoft/vscode-recipes/tree/master/debugging-jest-tests
+    {
+      "type": "pwa-node",
+      "request": "launch",
+      "name": "UVU All",
+      "skipFiles": ["<node_internals>/**"],
+      "program": "${workspaceFolder}/node_modules/.bin/uvu",
+      "args": ["-r", "esbuild-register", "./test", "\\.test\\.ts$"],
+      "console": "integratedTerminal",
+      // "internalConsoleOptions": "neverOpen",
+      "windows": {
+        "program": "${workspaceFolder}/node_modules/uvu/bin.js"
+      }
+    }
+  ]
+}
