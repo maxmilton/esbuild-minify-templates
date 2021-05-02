@@ -116,10 +116,14 @@ export function minifyTemplates(buildResult: BuildResult): BuildResult {
   return buildResult;
 }
 
-export function writeFiles(buildResult: BuildResult): void {
+export async function writeFiles(buildResult: BuildResult): Promise<void> {
   if (buildResult.outputFiles) {
+    const results: Promise<void>[] = [];
+
     buildResult.outputFiles.forEach((file) => {
-      fs.writeFile(file.path, file.contents, 'utf8', handleErr);
+      results.push(fs.promises.writeFile(file.path, file.contents, 'utf8'));
     });
+
+    await Promise.all(results);
   }
 }
