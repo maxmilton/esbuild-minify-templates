@@ -53,8 +53,12 @@ export function minifyTemplates(buildResult: BuildResult): BuildResult {
       });
 
       walk(ast, {
-        TemplateElement(node) {
-          const { start, end } = node.loc!;
+        TemplateLiteral(node: ParsedNode<'TemplateLiteral'>) {
+          // Don't modify this template or any nested templates
+          if (ignoreLines.includes(node.loc.start.line)) return SKIP;
+        },
+        TemplateElement(node: ParsedNode<'TemplateElement'>) {
+          const { start, end } = node.loc;
 
           if (start.line !== end.line || start.column !== end.column) {
             // const startCharLoc = getCharLoc(src, start.line, start.column);
