@@ -65,6 +65,7 @@ export function minifyTemplates(buildResult: BuildResult): BuildResult {
             //   endCharLoc + endOffset,
             //   content,
             // );
+            // @ts-expect-error - TODO:
             out.overwrite(node.start, node.end, content);
           }
         },
