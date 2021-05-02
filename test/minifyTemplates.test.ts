@@ -255,11 +255,9 @@ let b = \`
 // Plain strings
 
 test('does not modify non-template string with single quotes', () => {
-  // FIXME: meriyah parser crashes with "Unterminated string literal" error on this line
-  //  ↳ https://github.com/meriyah/meriyah/issues/191
-  // let b = 'x\n\n\ny';
   const source = `
 let a = 'x   y';
+let b = 'x\\n\\n\\ny';
 let c = 'x\t\t\ty';
 let d = '   <br>   <br>   <br>   ';`;
   const mockBuildResult = createMockBuildResult(source);
@@ -267,11 +265,9 @@ let d = '   <br>   <br>   <br>   ';`;
   assert.snapshot(getOutput(returned), source);
 });
 test('does not modify non-template string with double quotes', () => {
-  // FIXME: meriyah parser crashes with "Unterminated string literal" error on this line
-  //  ↳ https://github.com/meriyah/meriyah/issues/191
-  // let b = "x\n\n\ny";
   const source = `
 let a = "x   y";
+let b = "x\\n\\n\\ny";
 let c = "x\t\t\ty";
 let d = "   <br>   <br>   <br>   ";`;
   const mockBuildResult = createMockBuildResult(source);
