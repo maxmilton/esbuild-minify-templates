@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
 import type { BuildResult } from 'esbuild';
+import MagicString, { SourceMap } from 'magic-string';
 import { test } from 'uvu';
 import * as assert from 'uvu/assert';
-import MagicString, { SourceMap } from 'magic-string';
 import { decodeUTF8, minifyTemplates } from '../src/index';
 import { createMockBuildResult } from './utils';
 
@@ -337,6 +337,38 @@ let a = \`
    \`;
 let b = \` \${\`x y\`} \${h\`x y\`} \`;`,
   );
+});
+
+test('modifies tagged template literals when MINIFY_TAGGED_TEMPLATES_ONLY env var is set', () => {
+  process.env.MINIFY_TAGGED_TEMPLATES_ONLY = 'true';
+  const mockBuildResult = createMockBuildResult(`
+let a = h\`x   y\`;
+let b = h\`x\n\n\ny\`;
+let c = h\`x\t\t\ty\`;
+let d = h\`   <br>   <br>   <br>   \`;`);
+  const returned = minifyTemplates(mockBuildResult);
+  assert.snapshot(
+    getOutput(returned),
+    `
+let a = h\`x y\`;
+let b = h\`x y\`;
+let c = h\`x y\`;
+let d = h\`<br><br><br>\`;`,
+  );
+  delete process.env.MINIFY_TAGGED_TEMPLATES_ONLY;
+});
+
+test('does not modify non-tagged template literals when MINIFY_TAGGED_TEMPLATES_ONLY env var is set', () => {
+  process.env.MINIFY_TAGGED_TEMPLATES_ONLY = 'true';
+  const source = `
+let a = \`x   y\`;
+let b = \`x\n\n\ny\`;
+let c = \`x\t\t\ty\`;
+let d = \`   <br>   <br>   <br>   \`;`;
+  const mockBuildResult = createMockBuildResult(source);
+  const returned = minifyTemplates(mockBuildResult);
+  assert.snapshot(getOutput(returned), source);
+  delete process.env.MINIFY_TAGGED_TEMPLATES_ONLY;
 });
 
 // JS sourcemaps
