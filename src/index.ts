@@ -1,8 +1,4 @@
-/* eslint-disable no-param-reassign */
-
-// TODO: There's a chance code might use a template literal to construct a
-// RegExp and this tool could break the regex... how to avoid? Options with
-// exclude files filter?
+/* eslint-disable consistent-return, no-param-reassign */
 
 import remapping from '@ampproject/remapping';
 import { walk } from 'astray';
@@ -33,11 +29,22 @@ export function minifyTemplates(buildResult: BuildResult): BuildResult {
     buildResult.outputFiles.forEach((file, fileIndex, outputFiles) => {
       if (path.extname(file.path) !== '.js') return;
 
-      const src = file.text;
+      const src = file.contents.toString();
       const out = new MagicString(src);
+      const ignoreLines: number[] = [];
       const ast = parse(src, {
         next: true,
         loc: true,
+        ranges: true,
+
+        onComment(type, value, _start, _end, loc) {
+          if (
+            type === 'MultiLine'
+            && value.trim() === 'minify-templates-ignore'
+          ) {
+            ignoreLines.push(loc.end.line + 1);
+          }
+        },
       });
 
       walk(ast, {

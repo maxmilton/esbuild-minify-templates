@@ -3,7 +3,6 @@
 [![NPM version](https://img.shields.io/npm/v/esbuild-minify-templates.svg)](https://www.npmjs.com/package/esbuild-minify-templates)
 [![NPM bundle size (minified + gzip)](https://img.shields.io/bundlephobia/minzip/esbuild-minify-templates.svg)](https://bundlephobia.com/result?p=esbuild-minify-templates)
 [![Licence](https://img.shields.io/github/license/MaxMilton/esbuild-minify-templates.svg)](https://github.com/MaxMilton/esbuild-minify-templates/blob/master/LICENSE)
-![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)
 
 # esbuild-minify-templates
 
@@ -14,6 +13,7 @@ Tool to minify [template literal strings](https://developer.mozilla.org/en-US/do
 - Collapses whitespace in template literal strings
 - Removes whitespace in template literal strings around HTML tags
 - Source map support
+- Ability to ignore specific template literals
 
 ## Installation
 
@@ -40,6 +40,29 @@ esbuild
   .then(minifyTemplates)
   .then(writeFiles)
   .catch(() => process.exit(1));
+```
+
+## Ignoring specific template literals
+
+If you run into a situation where you don't want a certain template literal string to be minified, you can add a `/* minify-templates-ignore */` block comment on the line directly before it. This is especially useful for using template literals with the `RegExp` constructor or otherwise in situations where whitespace is meaningful.
+
+`ignore-examples.js`:
+
+```js
+// Dynamically constructed regular expression
+
+/* minify-templates-ignore */
+const re = new RegExp(`   <-- ${commentMsg}`, 'gm');
+
+// String where whitespace is meaningful
+
+/* minify-templates-ignore */
+codeEditor.setContent(`
+  body {
+    font-size: 20px;
+    color: coral;
+  }
+`);
 ```
 
 ## Licence
