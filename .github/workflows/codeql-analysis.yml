@@ -16,6 +16,8 @@ jobs:
       matrix:
         language: ['javascript']
     permissions:
+      actions: read
+      contents: read
       security-events: write
     steps:
       - name: Checkout repository
