@@ -17,6 +17,19 @@ type ParsedNode<K extends keyof ESTreeMap> = ESTreeMap[K] & {
   end: number;
 };
 
+export function encodeUTF8(text: string): Uint8Array {
+  let buffer: Uint8Array = Buffer.from(text);
+  if (!(buffer instanceof Uint8Array)) {
+    buffer = new Uint8Array(buffer);
+  }
+  return buffer;
+}
+
+export function decodeUTF8(bytes: Uint8Array): string {
+  const { buffer, byteOffset, byteLength } = bytes;
+  return Buffer.from(buffer, byteOffset, byteLength).toString();
+}
+
 /**
  * Minify template literal strings in `.js` files built by esbuild.
  */
@@ -25,7 +38,7 @@ export function minifyTemplates(buildResult: BuildResult): BuildResult {
     buildResult.outputFiles.forEach((file, fileIndex, outputFiles) => {
       if (path.extname(file.path) !== '.js') return;
 
-      const src = file.contents.toString();
+      const src = decodeUTF8(file.contents);
       const out = new MagicString(src);
       const ignoreLines: number[] = [];
       const ast = parse(src, {
@@ -66,7 +79,7 @@ export function minifyTemplates(buildResult: BuildResult): BuildResult {
         },
       });
 
-      outputFiles[fileIndex].contents = Buffer.from(out.toString());
+      outputFiles[fileIndex].contents = encodeUTF8(out.toString());
 
       const matchingMapIndex = outputFiles.findIndex(
         (outputFile) => outputFile.path === `${file.path}.map`,
@@ -86,14 +99,14 @@ export function minifyTemplates(buildResult: BuildResult): BuildResult {
               version: 3,
             },
             // esbuild generated source map
-            mapFile.text,
+            decodeUTF8(mapFile.contents),
           ],
           // don't load other source maps; referenced files are the original source
           () => null,
         );
 
-        outputFiles[matchingMapIndex].contents = Buffer.from(
-          JSON.stringify(remapped),
+        outputFiles[matchingMapIndex].contents = encodeUTF8(
+          remapped.toString(),
         );
       }
     });
