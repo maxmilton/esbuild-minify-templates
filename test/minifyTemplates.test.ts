@@ -8,32 +8,37 @@ import { decodeUTF8, minifyTemplates } from '../src/index';
 import { createMockBuildResult } from './utils';
 
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions/Character_Classes
+// https://en.wikipedia.org/wiki/ASCII#Control_code_chart
+// https://qwerty.dev/whitespace/
 const whitespaces = [
   [' ', 'space'],
-  ['\f', ''],
-  ['\n', 'new line'],
-  ['\r', ''],
-  ['\t', 'tab stop'],
-  ['\v', ''],
-  ['\u00a0', ''],
-  ['\u1680', ''],
-  ['\u2000', ''],
-  ['\u2001', ''],
-  ['\u2002', ''],
-  ['\u2003', ''],
-  ['\u2004', ''],
-  ['\u2005', ''],
-  ['\u2006', ''],
-  ['\u2007', ''],
-  ['\u2008', ''],
-  ['\u2009', ''],
-  ['\u200a', ''],
-  ['\u2028', ''],
-  ['\u2029', ''],
-  ['\u202f', ''],
-  ['\u205f', ''],
-  ['\u3000', ''],
-  ['\ufeff', ''],
+  ['\f', 'form feed'], // "new page"
+  ['\n', 'line feed'], // "new line"
+  ['\r', 'carriage return'],
+  ['\t', 'horizontal tab'],
+  ['\v', 'vertical tab'],
+  ['\u00a0', 'no-break space'], // &nbsp;
+  ['\u1680', 'ogham space mark'],
+  ['\u2000', 'en quad'],
+  ['\u2001', 'em quad'],
+  ['\u2002', 'en space'], // &ensp;
+  ['\u2003', 'em space'], // &emsp;
+  ['\u2004', 'three-per-em space'], // &emsp13;
+  ['\u2005', 'four-per-em space'], // &emsp14;
+  ['\u2006', 'six-per-em space'],
+  ['\u2007', 'figure space'], // &numsp;
+  ['\u2008', 'punctuation space'], // &puncsp;
+  ['\u2009', 'thin space'], // &thinsp;
+  ['\u200a', 'hair space'],
+  ['\u2028', 'line separator'],
+  ['\u2029', 'paragraph separator'],
+  ['\u202f', 'narrow no-break space'],
+  ['\u205f', 'medium mathematical space'],
+  ['\u3000', 'ideographic space'],
+  ['\ufeff', 'zero width no-break space'],
+
+  // XXX: Not whitespace but worth pointing out there is also:
+  // ['\u200b', 'zero-width space'],
 ];
 
 // eslint-disable-next-line no-param-reassign, no-return-assign
