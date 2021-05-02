@@ -1,7 +1,8 @@
+import type { BuildResult } from 'esbuild';
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
-import type { BuildResult } from 'esbuild';
+import { decodeUTF8, encodeUTF8 } from '../src/index';
 
 export function createMockBuildResult(
   content: string,
@@ -12,8 +13,10 @@ export function createMockBuildResult(
     outputFiles: [
       {
         path: path.join(dirPath, fileName),
-        contents: Buffer.from(content),
-        text: content,
+        contents: encodeUTF8(content),
+        get text() {
+          return decodeUTF8(this.contents);
+        },
       },
     ],
     errors: [],
