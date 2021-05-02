@@ -17,15 +17,6 @@ type ParsedNode<K extends keyof ESTreeMap> = ESTreeMap[K] & {
   end: number;
 };
 
-// function getCharLoc(source: string, line: number, column: number): number {
-//   return (
-//     source
-//       .split('\n')
-//       .slice(0, line - 1)
-//       .join('\n').length + column
-//   );
-// }
-
 /**
  * Minify template literal strings in `.js` files built by esbuild.
  */
@@ -54,19 +45,13 @@ export function minifyTemplates(buildResult: BuildResult): BuildResult {
 
       walk(ast, {
         TemplateLiteral(node: ParsedNode<'TemplateLiteral'>) {
-          // Don't modify this template or any nested templates
+          // don't modify current or any nested templates if it's ignored
           if (ignoreLines.includes(node.loc.start.line)) return SKIP;
         },
         TemplateElement(node: ParsedNode<'TemplateElement'>) {
           const { start, end } = node.loc;
 
           if (start.line !== end.line || start.column !== end.column) {
-            // const startCharLoc = getCharLoc(src, start.line, start.column);
-            // const endCharLoc = getCharLoc(src, end.line, end.column);
-
-            // const startOffset = start.line === 1 ? 0 : 1;
-            // const endOffset = end.line === 1 ? 0 : 1;
-
             const content = node.value.raw
               // reduce whitespace to a single space
               .replace(/\s+/gm, ' ')
@@ -76,11 +61,6 @@ export function minifyTemplates(buildResult: BuildResult): BuildResult {
               .replace(/^ </g, '<')
               .replace(/> $/g, '>');
 
-            // out.overwrite(
-            //   startCharLoc + startOffset,
-            //   endCharLoc + endOffset,
-            //   content,
-            // );
             out.overwrite(node.start, node.end, content);
           }
         },
