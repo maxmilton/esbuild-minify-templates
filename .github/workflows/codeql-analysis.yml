@@ -1,4 +1,4 @@
-name: "CodeQL"
+name: 'CodeQL'
 on:
   push:
     branches: [master]
@@ -6,7 +6,7 @@ on:
     # The branches below must be a subset of the branches above
     branches: [master]
   schedule:
-    - cron: "28 6 * * 4"
+    - cron: '28 6 * * 4'
 jobs:
   analyze:
     name: Analyze
@@ -14,7 +14,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: ["javascript"]
+        language: ['javascript']
+    permissions:
+      security-events: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
