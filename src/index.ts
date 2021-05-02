@@ -17,18 +17,12 @@ type ParsedNode<K extends keyof ESTreeMap> = ESTreeMap[K] & {
   end: number;
 };
 
-export function encodeUTF8(text: string): Uint8Array {
-  let buffer: Uint8Array = Buffer.from(text);
-  if (!(buffer instanceof Uint8Array)) {
-    buffer = new Uint8Array(buffer);
-  }
-  return buffer;
-}
-
-export function decodeUTF8(bytes: Uint8Array): string {
-  const { buffer, byteOffset, byteLength } = bytes;
-  return Buffer.from(buffer, byteOffset, byteLength).toString();
-}
+// Same encode/decode as esbuild
+// https://github.com/evanw/esbuild/blob/4dfd1b6ae07892f1e8f5a6712fc67301e19a1b24/lib/shared/stdio_protocol.ts#L353-L391
+const encoder = new TextEncoder();
+const decoder = new TextDecoder();
+export const encodeUTF8 = (text: string): Uint8Array => encoder.encode(text);
+export const decodeUTF8 = (bytes: Uint8Array): string => decoder.decode(bytes);
 
 /**
  * Minify template literal strings in `.js` files built by esbuild.

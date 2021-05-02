@@ -4,7 +4,7 @@ import type { BuildResult } from 'esbuild';
 import { test } from 'uvu';
 import * as assert from 'uvu/assert';
 import MagicString, { SourceMap } from 'magic-string';
-import { minifyTemplates } from '../src/index';
+import { decodeUTF8, minifyTemplates } from '../src/index';
 import { createMockBuildResult } from './utils';
 
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions/Character_Classes
@@ -40,7 +40,7 @@ const whitespaces = [
 const allWhitespace = whitespaces.reduce((text, [val]) => (text += val), '');
 
 function getOutput(buildResult: BuildResult, index = 0) {
-  return buildResult.outputFiles![index].contents.toString();
+  return decodeUTF8(buildResult.outputFiles![index].contents);
 }
 
 test('always returns buildResult', () => {

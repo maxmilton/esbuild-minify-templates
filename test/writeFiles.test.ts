@@ -64,4 +64,17 @@ test('writes multiple files to disk', async () => {
   assert.equal(result, [text1, text2, text3, text4, text5]);
 });
 
+test('correctly writes UTF-8 encoded text', async () => {
+  const directory = getTempDir(`test-${count++}`);
+  const filename = 'mock.txt';
+  const text = 'a\u00a0b\u2003c\u3000d 🤔👾💣';
+  const mockBuildResult = createMockBuildResult(text, directory, filename);
+  await writeFiles(mockBuildResult);
+  const result = await fs.promises.readFile(
+    path.join(directory, filename),
+    'utf-8',
+  );
+  assert.is(result, text);
+});
+
 test.run();
