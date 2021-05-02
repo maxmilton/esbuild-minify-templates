@@ -86,7 +86,7 @@ export function minifyTemplates(buildResult: BuildResult): BuildResult {
               version: 3,
             },
             // esbuild generated source map
-            mapFile.contents.toString(),
+            mapFile.text,
           ],
           // don't load other source maps; referenced files are the original source
           () => null,
