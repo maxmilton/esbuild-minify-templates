@@ -33,7 +33,7 @@ export function minifyTemplates(buildResult: BuildResult): BuildResult {
     buildResult.outputFiles.forEach((file, fileIndex, outputFiles) => {
       if (path.extname(file.path) !== '.js') return;
 
-      const src = file.text;
+      const src = file.contents.toString();
       const out = new MagicString(src);
       const ast = parse(src, {
         next: true,
