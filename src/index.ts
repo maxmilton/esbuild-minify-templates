@@ -1,16 +1,21 @@
 /* eslint-disable consistent-return, no-param-reassign */
 
 import remapping from '@ampproject/remapping';
-import { walk } from 'astray';
+import { ESTreeMap, SKIP, walk } from 'astray';
 import type { BuildResult } from 'esbuild';
+import type { SourceLocation } from 'estree';
 import fs from 'fs';
 import MagicString from 'magic-string';
 import { parse } from 'meriyah';
 import path from 'path';
 
-function handleErr(err?: Error | null) {
-  if (err) throw err;
-}
+type ParsedNode<K extends keyof ESTreeMap> = ESTreeMap[K] & {
+  // via meriyah "loc" option
+  loc: SourceLocation;
+  // via meriyah "ranges" option
+  start: number;
+  end: number;
+};
 
 // function getCharLoc(source: string, line: number, column: number): number {
 //   return (
@@ -72,15 +77,12 @@ export function minifyTemplates(buildResult: BuildResult): BuildResult {
             //   endCharLoc + endOffset,
             //   content,
             // );
-            // @ts-expect-error - TODO:
             out.overwrite(node.start, node.end, content);
           }
         },
       });
 
-      buildResult.outputFiles![fileIndex].contents = Buffer.from(
-        out.toString(),
-      );
+      outputFiles[fileIndex].contents = Buffer.from(out.toString());
 
       const matchingMapIndex = outputFiles.findIndex(
         (outputFile) => outputFile.path === `${file.path}.map`,
@@ -106,7 +108,7 @@ export function minifyTemplates(buildResult: BuildResult): BuildResult {
           () => null,
         );
 
-        buildResult.outputFiles![matchingMapIndex].contents = Buffer.from(
+        outputFiles[matchingMapIndex].contents = Buffer.from(
           JSON.stringify(remapped),
         );
       }
