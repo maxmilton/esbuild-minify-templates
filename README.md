@@ -79,6 +79,10 @@ codeEditor.setContent(`
 `);
 ```
 
+## Changelog
+
+See [releases on GitHub](https://github.com/MaxMilton/esbuild-minify-templates/releases).
+
 ## Licence
 
 `esbuild-minify-templates` is an MIT licensed open source project. See [LICENCE](https://github.com/MaxMilton/esbuild-minify-templates/blob/master/LICENCE).
