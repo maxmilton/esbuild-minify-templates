@@ -3,7 +3,7 @@
 import type { BuildResult } from 'esbuild';
 import { test } from 'uvu';
 import * as assert from 'uvu/assert';
-import MagicString from 'magic-string';
+import MagicString, { SourceMap } from 'magic-string';
 import { minifyTemplates } from '../src/index';
 import { createMockBuildResult } from './utils';
 
@@ -364,8 +364,32 @@ test('generates a new sourcemap', () => {
   assert.not.equal(getOutput(returned, 1), map);
 });
 
+test('generated sourcemap is loosely valid', () => {
+  const source = 'let a = `x   y`;';
+  const map = new MagicString(source)
+    .generateMap({
+      hires: true,
+      file: 'mock.js',
+      source,
+      includeContent: true,
+    })
+    .toString();
+  const mockBuildResult = {
+    outputFiles: [
+      createMockBuildResult(source).outputFiles![0],
+      createMockBuildResult(map, undefined, 'mock.js.map').outputFiles![0],
+    ],
+    errors: [],
+    warnings: [],
+  };
+  const returned = minifyTemplates(mockBuildResult);
+  assert.is(returned.outputFiles![1].path.endsWith('mock.js.map'), true);
+  const returnedMap = JSON.parse(getOutput(returned, 1)) as SourceMap;
+  assert.is(returnedMap.version, 3);
+  assert.ok(returnedMap.mappings);
+});
+
 // TODO:
-// test('generated sourcemap is valid', () => {});
 // test('generated sourcemap is correct', () => {});
 
 // Misc.
