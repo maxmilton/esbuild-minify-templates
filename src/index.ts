@@ -9,12 +9,14 @@ import MagicString from 'magic-string';
 import { parse } from 'meriyah';
 import path from 'path';
 
-type ParsedNode<K extends keyof ESTreeMap> = ESTreeMap[K] & {
-  // via meriyah "loc" option
-  loc: SourceLocation;
-  // via meriyah "ranges" option
-  start: number;
-  end: number;
+type ESTreeMapExtra<M = ESTreeMap> = {
+  [K in keyof M]: M[K] & {
+    // added via meriyah "loc" option
+    loc: SourceLocation;
+    // added via meriyah "ranges" option
+    start: number;
+    end: number;
+  };
 };
 
 // Same encode/decode as esbuild
@@ -40,6 +42,7 @@ export function minifyTemplates(buildResult: BuildResult): BuildResult {
         loc: true,
         ranges: true,
 
+        // XXX: Comments are only available when esbuild has minify as !true
         onComment(type, value, _start, _end, loc) {
           if (
             type === 'MultiLine'
@@ -50,12 +53,20 @@ export function minifyTemplates(buildResult: BuildResult): BuildResult {
         },
       });
 
-      walk(ast, {
-        TemplateLiteral(node: ParsedNode<'TemplateLiteral'>) {
+      walk<typeof ast, void, ESTreeMapExtra>(ast, {
+        TemplateLiteral(node) {
           // don't modify current or any nested templates if it's ignored
           if (ignoreLines.includes(node.loc.start.line)) return SKIP;
+
+          if (
+            process.env.MINIFY_TAGGED_TEMPLATES_ONLY
+            && node.path!.parent
+            && node.path!.parent.type !== 'TaggedTemplateExpression'
+          ) {
+            return SKIP;
+          }
         },
-        TemplateElement(node: ParsedNode<'TemplateElement'>) {
+        TemplateElement(node) {
           const { start, end } = node.loc;
 
           if (start.line !== end.line || start.column !== end.column) {

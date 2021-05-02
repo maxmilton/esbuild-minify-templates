@@ -42,6 +42,18 @@ esbuild
   .catch(() => process.exit(1));
 ```
 
+## Options
+
+#### Tagged template literals only
+
+Only minify tagged template literals (instead of all template literals) by setting the `MINIFY_TAGGED_TEMPLATES_ONLY` environment variable to a non-empty string.
+
+`build.mjs`:
+
+```js
+process.env.MINIFY_TAGGED_TEMPLATES_ONLY = 'true';
+```
+
 ## Ignoring specific template literals
 
 If you run into a situation where you don't want a certain template literal string to be minified, you can add a `/* minify-templates-ignore */` block comment on the line directly before it. This is especially useful for using template literals with the `RegExp` constructor or otherwise in situations where whitespace is meaningful.
