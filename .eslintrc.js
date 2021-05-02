@@ -1,3 +1,5 @@
+const OFF = 0;
+
 /** @type {import('eslint').Linter.Config} */
 module.exports = {
   root: true,
@@ -5,7 +7,7 @@ module.exports = {
   parser: '@typescript-eslint/parser',
   parserOptions: {
     extraFileExtensions: ['.mjs', '.cjs'],
-    project: './tsconfig.json',
+    project: ['./tsconfig.json', './test/tsconfig.json'],
   },
   env: {
     node: true,
@@ -17,6 +19,10 @@ module.exports = {
     'plugin:@typescript-eslint/recommended',
     'plugin:@typescript-eslint/recommended-requiring-type-checking',
   ],
+  rules: {
+    'import/prefer-default-export': OFF,
+    'no-restricted-syntax': OFF,
+  },
   overrides: [
     {
       files: ['.eslintrc.js'],
