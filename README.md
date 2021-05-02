@@ -46,13 +46,15 @@ esbuild
 
 If you run into a situation where you don't want a certain template literal string to be minified, you can add a `/* minify-templates-ignore */` block comment on the line directly before it. This is especially useful for using template literals with the `RegExp` constructor or otherwise in situations where whitespace is meaningful.
 
+> Note: This will only work with the esbuild `minify` option set to `false` because esbuild automatically removes the comments before we can read them. It's a known issue and we're exploring options for making this work with minify.
+
 `ignore-examples.js`:
 
 ```js
 // Dynamically constructed regular expression
 
 /* minify-templates-ignore */
-const re = new RegExp(`   <-- ${commentMsg}`, 'gm');
+const re = new RegExp(`   <-- ${commentMsg}`, 'g');
 
 // String where whitespace is meaningful
 
