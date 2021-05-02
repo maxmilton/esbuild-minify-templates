@@ -16,15 +16,18 @@ function handleErr(err?: Error | null) {
   if (err) throw err;
 }
 
-function getCharLoc(source: string, line: number, column: number): number {
-  return (
-    source
-      .split('\n')
-      .slice(0, line - 1)
-      .join('\n').length + column
-  );
-}
+// function getCharLoc(source: string, line: number, column: number): number {
+//   return (
+//     source
+//       .split('\n')
+//       .slice(0, line - 1)
+//       .join('\n').length + column
+//   );
+// }
 
+/**
+ * Minify template literal strings in `.js` files built by esbuild.
+ */
 export function minifyTemplates(buildResult: BuildResult): BuildResult {
   if (buildResult.outputFiles) {
     buildResult.outputFiles.forEach((file, fileIndex, outputFiles) => {
@@ -41,19 +44,28 @@ export function minifyTemplates(buildResult: BuildResult): BuildResult {
         TemplateElement(node) {
           const { start, end } = node.loc!;
 
-          if (start.line !== end.line && start.column !== end.column) {
-            const startCharLoc = getCharLoc(src, start.line, start.column);
-            const endCharLoc = getCharLoc(src, end.line, end.column);
+          if (start.line !== end.line || start.column !== end.column) {
+            // const startCharLoc = getCharLoc(src, start.line, start.column);
+            // const endCharLoc = getCharLoc(src, end.line, end.column);
+
+            // const startOffset = start.line === 1 ? 0 : 1;
+            // const endOffset = end.line === 1 ? 0 : 1;
+
             const content = node.value.raw
               // reduce whitespace to a single space
               .replace(/\s+/gm, ' ')
               // remove space between tags
               .replace(/> </g, '><')
-              // remove space at start and end edge tags
+              // remove space between edge and start/end tags
               .replace(/^ </g, '<')
               .replace(/> $/g, '>');
 
-            out.overwrite(startCharLoc + 1, endCharLoc + 1, content);
+            // out.overwrite(
+            //   startCharLoc + startOffset,
+            //   endCharLoc + endOffset,
+            //   content,
+            // );
+            out.overwrite(node.start, node.end, content);
           }
         },
       });
