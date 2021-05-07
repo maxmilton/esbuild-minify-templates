@@ -1,6 +1,6 @@
 {
   "name": "esbuild-minify-templates",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Minify template literal strings as part of an esbuild powered build process",
   "license": "MIT",
   "repository": "https://github.com/MaxMilton/esbuild-minify-templates",
