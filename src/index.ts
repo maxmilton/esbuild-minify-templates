@@ -77,7 +77,10 @@ export function minifyTemplates(buildResult: BuildResult): BuildResult {
               .replace(/> </g, '><')
               // remove space between edge and start/end tags
               .replace(/^ </g, '<')
-              .replace(/> $/g, '>');
+              .replace(/> $/g, '>')
+              // remove space around stage1 "node ref tags"
+              // https://github.com/MaxMilton/stage1
+              .replace(/> #(\w+) </g, '>#$1<');
 
             out.overwrite(node.start, node.end, content);
           }

@@ -492,4 +492,74 @@ test('returns correct result in complex code', () => {
   );
 });
 
+// `stage1` templates (`h` tagged template literals)
+
+test('removes space around stage1 node ref tag', () => {
+  const mockBuildResult = createMockBuildResult(
+    'let view = h`<div> #a </div>`;',
+  );
+  const returned = minifyTemplates(mockBuildResult);
+  assert.snapshot(getOutput(returned), 'let view = h`<div>#a</div>`;');
+});
+
+test('removes space before stage1 node ref tag in nested HTML tag', () => {
+  const mockBuildResult = createMockBuildResult(`
+    let view = h\`
+      <div>
+        <br> #a
+      </div>
+    \`;`);
+  const returned = minifyTemplates(mockBuildResult);
+  assert.snapshot(getOutput(returned), '\nlet view = h`<div><br>#a</div>`;');
+});
+
+test('removes space after stage1 node ref tag in nested HTML tag', () => {
+  const mockBuildResult = createMockBuildResult(`
+    let view = h\`
+      <div>
+        #a <br>
+      </div>
+    \`;`);
+  const returned = minifyTemplates(mockBuildResult);
+  assert.snapshot(getOutput(returned), '\nlet view = h`<div>#a<br></div>`;');
+});
+
+test('does not remove space around stage1 node ref tag with invalid ref', () => {
+  const mockBuildResult = createMockBuildResult(
+    ' let view = h`<div> #a b </div>`;',
+  );
+  const returned = minifyTemplates(mockBuildResult);
+  assert.snapshot(getOutput(returned), 'let view = h`<div> #a b </div>`;');
+});
+
+test('removes spaces correctly in complex stage1 template', () => {
+  const mockBuildResult = createMockBuildResult(`
+    let view = h\`
+      <header>
+        <nav>
+          <!-- comm -->
+
+          <h1 #title></h1>
+
+          <a href=#>
+            #link1
+          </a>
+          <a href=# #a >
+            #link2
+          </a>
+          <a href=#>   #link3 </a>
+
+          <div>
+            #not a ref
+          </div>
+        </nav>
+      </header>
+    \`;`);
+  const returned = minifyTemplates(mockBuildResult);
+  assert.snapshot(
+    getOutput(returned),
+    '\nlet view = h`<header><nav><!-- comm --><h1 #title></h1><a href=#>#link1</a><a href=# #a >#link2</a><a href=#>#link3</a><div> #not a ref </div></nav></header>`;',
+  );
+});
+
 test.run();
