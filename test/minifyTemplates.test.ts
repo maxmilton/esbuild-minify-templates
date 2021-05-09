@@ -4,6 +4,7 @@ import type { BuildResult } from 'esbuild';
 import MagicString, { SourceMap } from 'magic-string';
 import { test } from 'uvu';
 import * as assert from 'uvu/assert';
+import * as allExports from '../src/index';
 import { decodeUTF8, minifyTemplates } from '../src/index';
 import { createMockBuildResult } from './utils';
 
@@ -47,6 +48,27 @@ const allWhitespace = whitespaces.reduce((text, [val]) => (text += val), '');
 function getOutput(buildResult: BuildResult, index = 0) {
   return decodeUTF8(buildResult.outputFiles![index].contents);
 }
+
+test('exports a "minify" function', () => {
+  assert.is('minify' in allExports, true);
+  assert.type(allExports.minify, 'function');
+});
+test('exports a "minifyTemplates" function', () => {
+  assert.is('minifyTemplates' in allExports, true);
+  assert.type(allExports.minifyTemplates, 'function');
+});
+test('exports a "writeFiles" function', () => {
+  assert.is('writeFiles' in allExports, true);
+  assert.type(allExports.writeFiles, 'function');
+});
+test('exports a "encodeUTF8" function', () => {
+  assert.is('encodeUTF8' in allExports, true);
+  assert.type(allExports.encodeUTF8, 'function');
+});
+test('exports a "decodeUTF8" function', () => {
+  assert.is('decodeUTF8' in allExports, true);
+  assert.type(allExports.decodeUTF8, 'function');
+});
 
 test('always returns buildResult', () => {
   const mockBuildResult1 = { errors: [], warnings: [] };
