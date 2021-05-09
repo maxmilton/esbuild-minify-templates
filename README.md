@@ -39,7 +39,9 @@ esbuild
   })
   .then(minifyTemplates)
   .then(writeFiles)
-  .catch(() => process.exit(1));
+  .catch((e) => {
+    throw e;
+  });
 ```
 
 ## Options
