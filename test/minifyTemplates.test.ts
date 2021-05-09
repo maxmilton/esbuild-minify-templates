@@ -5,7 +5,7 @@ import MagicString, { SourceMap } from 'magic-string';
 import { test } from 'uvu';
 import * as assert from 'uvu/assert';
 import * as allExports from '../src/index';
-import { decodeUTF8, minifyTemplates } from '../src/index';
+import { decodeUTF8, minify, minifyTemplates } from '../src/index';
 import { createMockBuildResult } from './utils';
 
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions/Character_Classes
@@ -460,58 +460,63 @@ test('generated sourcemap is loosely valid', () => {
 
 // Misc.
 
-test('returns correct result in complex code', () => {
-  const mockBuildResult = createMockBuildResult(`
-  /**
-   * c1
-   */
+const mixedCodeSrc = `
+/**
+ * c1
+ */
 
-    "use strict";
+  "use strict";
 
-    const a = \`x    y\`;
-    let b = h\`
-      x    y
-    \`;
+  const a = \`x    y\`;
+  let b = h\`
+    x    y
+  \`;
 
 // c2
 
 \tlet c = \`
-      <div
-        class="a"
-        tabindex=-1
+    <div
+      class="a"
+      tabindex=-1
 
-      >
-        <a href="#"> abc </a>
-        <a    href="#">def </a>
-        <a href="#"   > hij</a>
-      </div>
-    \`;
-    var d = h\`
-      <br>
-      \${\`<br>\`}
-      \${\`<br>   \`}
-      \${\`abc  \t\t<br>\`}
-    \`;
-  `);
-  const returned = minifyTemplates(mockBuildResult);
-  assert.snapshot(
-    getOutput(returned),
-    `
-  /**
-   * c1
-   */
+    >
+      <a href="#"> abc </a>
+      <a    href="#">def </a>
+      <a href="#"   > hij</a>
+    </div>
+  \`;
+  var d = h\`
+    <br>
+    \${\`<br>\`}
+    \${\`<br>   \`}
+    \${\`abc  \t\t<br>\`}
+  \`;
+`;
+const mixedCodeMin = `
+/**
+ * c1
+ */
 
-    "use strict";
+  "use strict";
 
-    const a = \`x y\`;
-    let b = h\` x y \`;
+  const a = \`x y\`;
+  let b = h\` x y \`;
 
 // c2
 
 \tlet c = \`<div class="a" tabindex=-1 ><a href="#"> abc </a><a href="#">def </a><a href="#" > hij</a></div>\`;
-    var d = h\`<br>\${\`<br>\`} \${\`<br>\`} \${\`abc <br>\`} \`;
-  `,
-  );
+  var d = h\`<br>\${\`<br>\`} \${\`<br>\`} \${\`abc <br>\`} \`;
+`;
+
+test('returns correct result in complex code', () => {
+  const mockBuildResult = createMockBuildResult(mixedCodeSrc);
+  const returned = minifyTemplates(mockBuildResult);
+  assert.snapshot(getOutput(returned), mixedCodeMin);
+});
+
+test('minify matches minifyTemplates result in complex code', () => {
+  const returned = minify(mixedCodeSrc);
+  assert.snapshot(returned.toString(), mixedCodeMin);
 });
 
 // `stage1` templates (`h` tagged template literals)
@@ -554,34 +559,39 @@ test('does not remove space around stage1 node ref tag with invalid ref', () => 
   assert.snapshot(getOutput(returned), 'let view = h`<div> #a b </div>`;');
 });
 
+const stage1TemplateSrc = `
+let view = h\`
+  <header>
+    <nav>
+      <!-- comm -->
+
+      <h1 #title></h1>
+
+      <a href=#>
+        #link1
+      </a>
+      <a href=# #a >
+        #link2
+      </a>
+      <a href=#>   #link3 </a>
+
+      <div>
+        #not a ref
+      </div>
+    </nav>
+  </header>
+\`;`;
+const stage1TemplateMin = '\nlet view = h`<header><nav><!-- comm --><h1 #title></h1><a href=#>#link1</a><a href=# #a >#link2</a><a href=#>#link3</a><div> #not a ref </div></nav></header>`;';
+
 test('removes spaces correctly in complex stage1 template', () => {
-  const mockBuildResult = createMockBuildResult(`
-    let view = h\`
-      <header>
-        <nav>
-          <!-- comm -->
-
-          <h1 #title></h1>
-
-          <a href=#>
-            #link1
-          </a>
-          <a href=# #a >
-            #link2
-          </a>
-          <a href=#>   #link3 </a>
-
-          <div>
-            #not a ref
-          </div>
-        </nav>
-      </header>
-    \`;`);
+  const mockBuildResult = createMockBuildResult(stage1TemplateSrc);
   const returned = minifyTemplates(mockBuildResult);
-  assert.snapshot(
-    getOutput(returned),
-    '\nlet view = h`<header><nav><!-- comm --><h1 #title></h1><a href=#>#link1</a><a href=# #a >#link2</a><a href=#>#link3</a><div> #not a ref </div></nav></header>`;',
-  );
+  assert.snapshot(getOutput(returned), stage1TemplateMin);
+});
+
+test('minify matches minifyTemplates result in complex stage1 template', () => {
+  const returned = minify(stage1TemplateSrc);
+  assert.snapshot(returned.toString(), stage1TemplateMin);
 });
 
 test.run();
