@@ -33,14 +33,18 @@ export async function createTempDir(): Promise<void> {
 }
 
 export async function deleteTempDir(): Promise<void> {
-  if (tmpDir) {
-    await fs.promises.rm(tmpDir, {
-      force: true,
-      recursive: true,
-    });
-
-    tmpDir = undefined;
+  if (!tmpDir) {
+    throw new Error(
+      'No temp directory exists, you need to call createTempDir() first',
+    );
   }
+
+  await fs.promises.rm(tmpDir, {
+    force: true,
+    recursive: true,
+  });
+
+  tmpDir = undefined;
 }
 
 export function getTempDir(subDir?: string): string {

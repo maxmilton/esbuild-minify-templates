@@ -26,6 +26,59 @@ const decoder = new TextDecoder();
 export const encodeUTF8 = (text: string): Uint8Array => encoder.encode(text);
 export const decodeUTF8 = (bytes: Uint8Array): string => decoder.decode(bytes);
 
+export function minify(code: string): MagicString {
+  const out = new MagicString(code);
+  const ignoreLines: number[] = [];
+  const ast = parse(code, {
+    next: true,
+    loc: true,
+    ranges: true,
+
+    // XXX: Comments are only available when esbuild has minify as !true
+    onComment(type, value, _start, _end, loc) {
+      if (type === 'MultiLine' && value.trim() === 'minify-templates-ignore') {
+        ignoreLines.push(loc.end.line + 1);
+      }
+    },
+  });
+
+  walk<typeof ast, void, ESTreeMapExtra>(ast, {
+    TemplateLiteral(node) {
+      // don't modify current or any nested templates if it's ignored
+      if (ignoreLines.includes(node.loc.start.line)) return SKIP;
+
+      if (
+        process.env.MINIFY_TAGGED_TEMPLATES_ONLY
+        && node.path!.parent
+        && node.path!.parent.type !== 'TaggedTemplateExpression'
+      ) {
+        return SKIP;
+      }
+    },
+    TemplateElement(node) {
+      const { start, end } = node.loc;
+
+      if (start.line !== end.line || start.column !== end.column) {
+        const content = node.value.raw
+          // reduce whitespace to a single space
+          .replace(/\s+/gm, ' ')
+          // remove space between tags
+          .replace(/> </g, '><')
+          // remove space between edge and start/end tags
+          .replace(/^ </g, '<')
+          .replace(/> $/g, '>')
+          // remove space around stage1 "node ref tags"
+          // https://github.com/MaxMilton/stage1
+          .replace(/> #(\w+) </g, '>#$1<');
+
+        out.overwrite(node.start, node.end, content);
+      }
+    },
+  });
+
+  return out;
+}
+
 /**
  * Minify template literal strings in `.js` files built by esbuild.
  */
@@ -35,57 +88,7 @@ export function minifyTemplates(buildResult: BuildResult): BuildResult {
       if (path.extname(file.path) !== '.js') return;
 
       const src = decodeUTF8(file.contents);
-      const out = new MagicString(src);
-      const ignoreLines: number[] = [];
-      const ast = parse(src, {
-        next: true,
-        loc: true,
-        ranges: true,
-
-        // XXX: Comments are only available when esbuild has minify as !true
-        onComment(type, value, _start, _end, loc) {
-          if (
-            type === 'MultiLine'
-            && value.trim() === 'minify-templates-ignore'
-          ) {
-            ignoreLines.push(loc.end.line + 1);
-          }
-        },
-      });
-
-      walk<typeof ast, void, ESTreeMapExtra>(ast, {
-        TemplateLiteral(node) {
-          // don't modify current or any nested templates if it's ignored
-          if (ignoreLines.includes(node.loc.start.line)) return SKIP;
-
-          if (
-            process.env.MINIFY_TAGGED_TEMPLATES_ONLY
-            && node.path!.parent
-            && node.path!.parent.type !== 'TaggedTemplateExpression'
-          ) {
-            return SKIP;
-          }
-        },
-        TemplateElement(node) {
-          const { start, end } = node.loc;
-
-          if (start.line !== end.line || start.column !== end.column) {
-            const content = node.value.raw
-              // reduce whitespace to a single space
-              .replace(/\s+/gm, ' ')
-              // remove space between tags
-              .replace(/> </g, '><')
-              // remove space between edge and start/end tags
-              .replace(/^ </g, '<')
-              .replace(/> $/g, '>')
-              // remove space around stage1 "node ref tags"
-              // https://github.com/MaxMilton/stage1
-              .replace(/> #(\w+) </g, '>#$1<');
-
-            out.overwrite(node.start, node.end, content);
-          }
-        },
-      });
+      const out = minify(src);
 
       outputFiles[fileIndex].contents = encodeUTF8(out.toString());
 
