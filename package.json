@@ -36,7 +36,7 @@
     "@typescript-eslint/eslint-plugin": "4.22.1",
     "@typescript-eslint/parser": "4.22.1",
     "c8": "7.7.2",
-    "esbuild": "0.11.19",
+    "esbuild": "0.11.20",
     "esbuild-register": "2.5.0",
     "eslint": "7.26.0",
     "eslint-config-airbnb-typescript": "12.3.1",
