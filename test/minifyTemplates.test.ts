@@ -206,32 +206,29 @@ test('correctly modifies template literal on only line', () => {
 test('correctly modifies template literal on first line ', () => {
   const mockBuildResult = createMockBuildResult('let a = `x   y`;\n\n');
   const returned = minifyTemplates(mockBuildResult);
-  assert.snapshot(getOutput(returned), 'let a = `x y`;\n\n');
+  assert.fixture(getOutput(returned), 'let a = `x y`;\n\n');
 });
 test('correctly modifies template literal on second line', () => {
   const mockBuildResult = createMockBuildResult('\nlet a = `x   y`;\n\n');
   const returned = minifyTemplates(mockBuildResult);
-  assert.snapshot(getOutput(returned), '\nlet a = `x y`;\n\n');
+  assert.fixture(getOutput(returned), '\nlet a = `x y`;\n\n');
 });
 test('correctly modifies template literal on tenth line', () => {
   const mockBuildResult = createMockBuildResult(
     '\n\n\n\n\n\n\n\n\nlet a = `x   y`;\n\n\n',
   );
   const returned = minifyTemplates(mockBuildResult);
-  assert.snapshot(
-    getOutput(returned),
-    '\n\n\n\n\n\n\n\n\nlet a = `x y`;\n\n\n',
-  );
+  assert.fixture(getOutput(returned), '\n\n\n\n\n\n\n\n\nlet a = `x y`;\n\n\n');
 });
 test('correctly modifies multi-line template literal on first line', () => {
   const mockBuildResult = createMockBuildResult('let a = `x\n\n\ny`;');
   const returned = minifyTemplates(mockBuildResult);
-  assert.snapshot(getOutput(returned), 'let a = `x y`;');
+  assert.fixture(getOutput(returned), 'let a = `x y`;');
 });
 test('correctly modifies multi-line template literal on second line', () => {
   const mockBuildResult = createMockBuildResult('\nlet a = `x\n\n\ny`;\n\n');
   const returned = minifyTemplates(mockBuildResult);
-  assert.snapshot(getOutput(returned), '\nlet a = `x y`;\n\n');
+  assert.fixture(getOutput(returned), '\nlet a = `x y`;\n\n');
 });
 
 // Tagged template literals
@@ -245,19 +242,19 @@ test('correctly modifies tagged template literal on only line', () => {
 test('correctly modifies tagged template literal on first line ', () => {
   const mockBuildResult = createMockBuildResult('let a = h`x   y`;\n\n');
   const returned = minifyTemplates(mockBuildResult);
-  assert.snapshot(getOutput(returned), 'let a = h`x y`;\n\n');
+  assert.fixture(getOutput(returned), 'let a = h`x y`;\n\n');
 });
 test('correctly modifies tagged template literal on second line', () => {
   const mockBuildResult = createMockBuildResult('\nlet a = h`x   y`;\n\n');
   const returned = minifyTemplates(mockBuildResult);
-  assert.snapshot(getOutput(returned), '\nlet a = h`x y`;\n\n');
+  assert.fixture(getOutput(returned), '\nlet a = h`x y`;\n\n');
 });
 test('correctly modifies tagged template literal on tenth line', () => {
   const mockBuildResult = createMockBuildResult(
     '\n\n\n\n\n\n\n\n\nlet a = h`x   y`;\n\n\n',
   );
   const returned = minifyTemplates(mockBuildResult);
-  assert.snapshot(
+  assert.fixture(
     getOutput(returned),
     '\n\n\n\n\n\n\n\n\nlet a = h`x y`;\n\n\n',
   );
@@ -265,12 +262,12 @@ test('correctly modifies tagged template literal on tenth line', () => {
 test('correctly modifies multi-line tagged template literal on first line', () => {
   const mockBuildResult = createMockBuildResult('let a = h`x\n\n\ny`;');
   const returned = minifyTemplates(mockBuildResult);
-  assert.snapshot(getOutput(returned), 'let a = h`x y`;');
+  assert.fixture(getOutput(returned), 'let a = h`x y`;');
 });
 test('correctly modifies multi-line tagged template literal on second line', () => {
   const mockBuildResult = createMockBuildResult('\nlet a = h`x\n\n\ny`;\n\n');
   const returned = minifyTemplates(mockBuildResult);
-  assert.snapshot(getOutput(returned), '\nlet a = h`x y`;\n\n');
+  assert.fixture(getOutput(returned), '\nlet a = h`x y`;\n\n');
 });
 
 // Nested template literals
@@ -296,7 +293,7 @@ let c = 'x\t\t\ty';
 let d = '   <br>   <br>   <br>   ';`;
   const mockBuildResult = createMockBuildResult(source);
   const returned = minifyTemplates(mockBuildResult);
-  assert.snapshot(getOutput(returned), source);
+  assert.fixture(getOutput(returned), source);
 });
 test('does not modify non-template string with double quotes', () => {
   const source = `
@@ -306,7 +303,7 @@ let c = "x\t\t\ty";
 let d = "   <br>   <br>   <br>   ";`;
   const mockBuildResult = createMockBuildResult(source);
   const returned = minifyTemplates(mockBuildResult);
-  assert.snapshot(getOutput(returned), source);
+  assert.fixture(getOutput(returned), source);
 });
 
 // "Ignore comment" feature
@@ -331,7 +328,7 @@ codeEditor.setContent(\`
   }
 \`);`);
   const returned = minifyTemplates(mockBuildResult);
-  assert.snapshot(
+  assert.fixture(
     getOutput(returned),
     `
 /* minify-templates-ignore */
@@ -361,7 +358,7 @@ let b = \`
 \${h\`x   y\`}
    \`;`);
   const returned = minifyTemplates(mockBuildResult);
-  assert.snapshot(
+  assert.fixture(
     getOutput(returned),
     `
 /* minify-templates-ignore */
@@ -381,7 +378,7 @@ let b = h\`x\n\n\ny\`;
 let c = h\`x\t\t\ty\`;
 let d = h\`   <br>   <br>   <br>   \`;`);
   const returned = minifyTemplates(mockBuildResult);
-  assert.snapshot(
+  assert.fixture(
     getOutput(returned),
     `
 let a = h\`x y\`;
@@ -401,7 +398,7 @@ let c = \`x\t\t\ty\`;
 let d = \`   <br>   <br>   <br>   \`;`;
   const mockBuildResult = createMockBuildResult(source);
   const returned = minifyTemplates(mockBuildResult);
-  assert.snapshot(getOutput(returned), source);
+  assert.fixture(getOutput(returned), source);
   delete process.env.MINIFY_TAGGED_TEMPLATES_ONLY;
 });
 
@@ -511,12 +508,12 @@ const mixedCodeMin = `
 test('returns correct result in complex code', () => {
   const mockBuildResult = createMockBuildResult(mixedCodeSrc);
   const returned = minifyTemplates(mockBuildResult);
-  assert.snapshot(getOutput(returned), mixedCodeMin);
+  assert.fixture(getOutput(returned), mixedCodeMin);
 });
 
 test('minify matches minifyTemplates result in complex code', () => {
   const returned = minify(mixedCodeSrc);
-  assert.snapshot(returned.toString(), mixedCodeMin);
+  assert.fixture(returned.toString(), mixedCodeMin);
 });
 
 // `stage1` templates (`h` tagged template literals)
@@ -586,12 +583,12 @@ const stage1TemplateMin = '\nlet view = h`<header><nav><!-- comm --><h1 #title><
 test('removes spaces correctly in complex stage1 template', () => {
   const mockBuildResult = createMockBuildResult(stage1TemplateSrc);
   const returned = minifyTemplates(mockBuildResult);
-  assert.snapshot(getOutput(returned), stage1TemplateMin);
+  assert.fixture(getOutput(returned), stage1TemplateMin);
 });
 
 test('minify matches minifyTemplates result in complex stage1 template', () => {
   const returned = minify(stage1TemplateSrc);
-  assert.snapshot(returned.toString(), stage1TemplateMin);
+  assert.fixture(returned.toString(), stage1TemplateMin);
 });
 
 test.run();
