@@ -1,8 +1,8 @@
-[![Build status](https://img.shields.io/github/workflow/status/MaxMilton/esbuild-minify-templates/ci)](https://github.com/MaxMilton/esbuild-minify-templates/actions)
+[![Build status](https://img.shields.io/github/workflow/status/maxmilton/esbuild-minify-templates/ci)](https://github.com/maxmilton/esbuild-minify-templates/actions)
 [![Coverage status](https://img.shields.io/codeclimate/coverage/MaxMilton/esbuild-minify-templates)](https://codeclimate.com/github/MaxMilton/esbuild-minify-templates)
 [![NPM version](https://img.shields.io/npm/v/esbuild-minify-templates.svg)](https://www.npmjs.com/package/esbuild-minify-templates)
 [![NPM bundle size (minified + gzip)](https://img.shields.io/bundlephobia/minzip/esbuild-minify-templates.svg)](https://bundlephobia.com/result?p=esbuild-minify-templates)
-[![Licence](https://img.shields.io/github/license/MaxMilton/esbuild-minify-templates.svg)](https://github.com/MaxMilton/esbuild-minify-templates/blob/master/LICENSE)
+[![Licence](https://img.shields.io/github/license/maxmilton/esbuild-minify-templates.svg)](https://github.com/maxmilton/esbuild-minify-templates/blob/master/LICENSE)
 
 # esbuild-minify-templates
 
@@ -83,11 +83,11 @@ codeEditor.setContent(`
 
 ## Changelog
 
-See [releases on GitHub](https://github.com/MaxMilton/esbuild-minify-templates/releases).
+See [releases on GitHub](https://github.com/maxmilton/esbuild-minify-templates/releases).
 
 ## Licence
 
-`esbuild-minify-templates` is an MIT licensed open source project. See [LICENCE](https://github.com/MaxMilton/esbuild-minify-templates/blob/master/LICENCE).
+`esbuild-minify-templates` is an MIT licensed open source project. See [LICENCE](https://github.com/maxmilton/esbuild-minify-templates/blob/master/LICENCE).
 
 ---
 
