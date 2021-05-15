@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
-import type { BuildResult } from 'esbuild';
 import MagicString, { SourceMap } from 'magic-string';
 import { test } from 'uvu';
 import * as assert from 'uvu/assert';
+import type { BuildResult } from 'esbuild';
 import * as allExports from '../src/index';
 import { decodeUTF8, minify, minifyTemplates } from '../src/index';
 import { createMockBuildResult } from './utils';

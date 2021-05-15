@@ -2,12 +2,12 @@
 
 import remapping from '@ampproject/remapping';
 import { ESTreeMap, SKIP, walk } from 'astray';
-import type { BuildResult } from 'esbuild';
-import type { SourceLocation } from 'estree';
 import fs from 'fs';
 import MagicString from 'magic-string';
 import { parse } from 'meriyah';
 import path from 'path';
+import type { SourceLocation } from 'estree';
+import type { BuildResult } from 'esbuild';
 
 type ESTreeMapExtra<M = ESTreeMap> = {
   [K in keyof M]: M[K] & {

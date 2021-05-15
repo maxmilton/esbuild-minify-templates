@@ -1,7 +1,7 @@
-import type { BuildResult } from 'esbuild';
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
+import type { BuildResult } from 'esbuild';
 import { decodeUTF8, encodeUTF8 } from '../src/index';
 
 export function createMockBuildResult(
