@@ -23,7 +23,7 @@
     "test": "c8 --all --include=src --reporter=text --reporter=lcovonly uvu -r esbuild-register test '\\.test\\.ts$'"
   },
   "peerDependencies": {
-    "esbuild": "^0.11.0 || ^0.12.0"
+    "esbuild": "^0.10.0 || ^0.11.0 || ^0.12.0"
   },
   "dependencies": {
     "@ampproject/remapping": "^1.0.1",
