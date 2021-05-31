@@ -18,6 +18,12 @@ Tool to minify [template literal strings](https://developer.mozilla.org/en-US/do
 ## Installation
 
 ```sh
+npm install --save-dev esbuild-minify-templates
+```
+
+or
+
+```sh
 yarn add -D esbuild-minify-templates
 ```
 
