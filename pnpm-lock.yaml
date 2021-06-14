@@ -7,7 +7,7 @@ specifiers:
   '@typescript-eslint/parser': 4.27.0
   astray: ^1.1.1
   c8: 7.7.2
-  esbuild: 0.12.5
+  esbuild: 0.12.8
   esbuild-register: 2.6.0
   eslint: 7.28.0
   eslint-config-airbnb-typescript: 12.3.1
@@ -29,7 +29,7 @@ devDependencies:
   '@typescript-eslint/eslint-plugin': 4.27.0_1c5b48a1f115d929d137a72df737d54c
   '@typescript-eslint/parser': 4.27.0_eslint@7.28.0+typescript@4.3.2
   c8: 7.7.2
-  esbuild: 0.12.5
+  esbuild: 0.12.8
   esbuild-register: 2.6.0
   eslint: 7.28.0
   eslint-config-airbnb-typescript: 12.3.1_75473f0babdc4ff1c55efce786fd63eb
@@ -643,12 +643,6 @@ packages:
     dependencies:
       esbuild: 0.12.8
       jsonc-parser: 3.0.0
-    dev: true
-
-  /esbuild/0.12.5:
-    resolution: {integrity: sha512-vcuP53pA5XiwUU4FnlXM+2PnVjTfHGthM7uP1gtp+9yfheGvFFbq/KyuESThmtoHPUrfZH5JpxGVJIFDVD1Egw==}
-    hasBin: true
-    requiresBuild: true
     dev: true
 
   /esbuild/0.12.8:
