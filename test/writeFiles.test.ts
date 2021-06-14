@@ -18,20 +18,17 @@ test.before(createTempDir);
 test.after(deleteTempDir);
 
 test('writes single file to disk', async () => {
-  const directory = getTempDir(`test${count++}`);
+  const dir = getTempDir(`test${count++}`);
   const filename = 'mock.txt';
   const text = 'abc';
-  const mockBuildResult = createMockBuildResult(text, directory, filename);
+  const mockBuildResult = createMockBuildResult(text, dir, filename);
   await writeFiles(mockBuildResult);
-  const result = await fs.promises.readFile(
-    path.join(directory, filename),
-    'utf-8',
-  );
+  const result = await fs.promises.readFile(path.join(dir, filename), 'utf-8');
   assert.is(result, text);
 });
 
 test('writes multiple files to disk', async () => {
-  const directory = getTempDir(`test${count++}`);
+  const dir = getTempDir(`test${count++}`);
   const filename1 = 'mock.js';
   const filename2 = 'mock.js.map';
   const filename3 = 'mock.css';
@@ -44,36 +41,33 @@ test('writes multiple files to disk', async () => {
   const text5 = 'file5';
   const mockBuildResult = {
     outputFiles: [
-      createMockBuildResult(text1, directory, filename1).outputFiles![0],
-      createMockBuildResult(text2, directory, filename2).outputFiles![0],
-      createMockBuildResult(text3, directory, filename3).outputFiles![0],
-      createMockBuildResult(text4, directory, filename4).outputFiles![0],
-      createMockBuildResult(text5, directory, filename5).outputFiles![0],
+      createMockBuildResult(text1, dir, filename1).outputFiles![0],
+      createMockBuildResult(text2, dir, filename2).outputFiles![0],
+      createMockBuildResult(text3, dir, filename3).outputFiles![0],
+      createMockBuildResult(text4, dir, filename4).outputFiles![0],
+      createMockBuildResult(text5, dir, filename5).outputFiles![0],
     ],
     errors: [],
     warnings: [],
   };
   await writeFiles(mockBuildResult);
   const result = await Promise.all([
-    fs.promises.readFile(path.join(directory, filename1), 'utf-8'),
-    fs.promises.readFile(path.join(directory, filename2), 'utf-8'),
-    fs.promises.readFile(path.join(directory, filename3), 'utf-8'),
-    fs.promises.readFile(path.join(directory, filename4), 'utf-8'),
-    fs.promises.readFile(path.join(directory, filename5), 'utf-8'),
+    fs.promises.readFile(path.join(dir, filename1), 'utf-8'),
+    fs.promises.readFile(path.join(dir, filename2), 'utf-8'),
+    fs.promises.readFile(path.join(dir, filename3), 'utf-8'),
+    fs.promises.readFile(path.join(dir, filename4), 'utf-8'),
+    fs.promises.readFile(path.join(dir, filename5), 'utf-8'),
   ]);
   assert.equal(result, [text1, text2, text3, text4, text5]);
 });
 
 test('correctly writes UTF-8 encoded text', async () => {
-  const directory = getTempDir(`test${count++}`);
+  const dir = getTempDir(`test${count++}`);
   const filename = 'mock.txt';
   const text = 'a\u00a0b\u2003c\u3000d 🤔👾💣';
-  const mockBuildResult = createMockBuildResult(text, directory, filename);
+  const mockBuildResult = createMockBuildResult(text, dir, filename);
   await writeFiles(mockBuildResult);
-  const result = await fs.promises.readFile(
-    path.join(directory, filename),
-    'utf-8',
-  );
+  const result = await fs.promises.readFile(path.join(dir, filename), 'utf-8');
   assert.is(result, text);
 });
 

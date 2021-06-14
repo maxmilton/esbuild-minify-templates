@@ -14,19 +14,19 @@ test.before(createTempDir);
 test.after(deleteTempDir);
 
 test('build runs without error', async () => {
-  const directory = getTempDir(`e2e-test${count++}`);
-  const inFile = path.join(directory, 'index.ts');
-  const outFile = path.join(directory, 'index.js');
+  const dir = getTempDir(`test${count++}`);
+  const srcfile = path.join(dir, 'index.ts');
+  const outfile = path.join(dir, 'index.js');
   await fs.promises.writeFile(
-    inFile,
+    srcfile,
     `
     const a = \` \n\n\n   <a>b   </a>   \n\n  \`;
     console.log(a);`,
     'utf8',
   );
   const built = await esbuild.build({
-    entryPoints: [inFile],
-    outfile: outFile,
+    entryPoints: [srcfile],
+    outfile,
     bundle: true,
     platform: 'node',
     minifyWhitespace: true,
@@ -34,7 +34,7 @@ test('build runs without error', async () => {
   });
   const minified = minifyTemplates(built);
   await writeFiles(minified);
-  const result = await fs.promises.readFile(outFile, 'utf8');
+  const result = await fs.promises.readFile(outfile, 'utf8');
   assert.fixture(result, 'var a=`<a>b </a>`;console.log(a);\n');
 });
 
