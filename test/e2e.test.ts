@@ -14,7 +14,7 @@ test.before(createTempDir);
 test.after(deleteTempDir);
 
 test('build runs without error', async () => {
-  const directory = getTempDir(`e2e-test-${count++}`);
+  const directory = getTempDir(`e2e-test${count++}`);
   const inFile = path.join(directory, 'index.ts');
   const outFile = path.join(directory, 'index.js');
   await fs.promises.writeFile(

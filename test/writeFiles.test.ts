@@ -18,7 +18,7 @@ test.before(createTempDir);
 test.after(deleteTempDir);
 
 test('writes single file to disk', async () => {
-  const directory = getTempDir(`test-${count++}`);
+  const directory = getTempDir(`test${count++}`);
   const filename = 'mock.txt';
   const text = 'abc';
   const mockBuildResult = createMockBuildResult(text, directory, filename);
@@ -31,7 +31,7 @@ test('writes single file to disk', async () => {
 });
 
 test('writes multiple files to disk', async () => {
-  const directory = getTempDir(`test-${count++}`);
+  const directory = getTempDir(`test${count++}`);
   const filename1 = 'mock.js';
   const filename2 = 'mock.js.map';
   const filename3 = 'mock.css';
@@ -65,7 +65,7 @@ test('writes multiple files to disk', async () => {
 });
 
 test('correctly writes UTF-8 encoded text', async () => {
-  const directory = getTempDir(`test-${count++}`);
+  const directory = getTempDir(`test${count++}`);
   const filename = 'mock.txt';
   const text = 'a\u00a0b\u2003c\u3000d 🤔👾💣';
   const mockBuildResult = createMockBuildResult(text, directory, filename);
