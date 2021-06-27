@@ -14,7 +14,7 @@ specifiers:
   eslint-plugin-import: 2.23.4
   magic-string: ^0.25.7
   meriyah: ^4.1.5
-  prettier: 2.3.1
+  prettier: 2.3.2
   typescript: 4.3.4
   uvu: 0.5.1
 
@@ -34,7 +34,7 @@ devDependencies:
   eslint: 7.29.0
   eslint-config-airbnb-typescript: 12.3.1_bc3e9ea18fd8282796505226ca920ee6
   eslint-plugin-import: 2.23.4_eslint@7.29.0
-  prettier: 2.3.1
+  prettier: 2.3.2
   typescript: 4.3.4
   uvu: 0.5.1
 
@@ -1543,8 +1543,8 @@ packages:
     engines: {node: '>= 0.8.0'}
     dev: true
 
-  /prettier/2.3.1:
-    resolution: {integrity: sha512-p+vNbgpLjif/+D+DwAZAbndtRrR0md0MwfmOVN9N+2RgyACMT+7tfaRnT+WDPkqnuVwleyuBIG2XBxKDme3hPA==}
+  /prettier/2.3.2:
+    resolution: {integrity: sha512-lnJzDfJ66zkMy58OL5/NY5zp70S7Nz6KqcKkXYzn2tMVrNxvbqaBpg7H3qHaLxCJ5lNMsGuM8+ohS7cZrthdLQ==}
     engines: {node: '>=10.13.0'}
     hasBin: true
     dev: true
