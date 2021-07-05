@@ -121,8 +121,7 @@ test('reduces all whitespaces to a single space', () => {
   assert.is(getOutput(returned), 'let a = ` `;');
 });
 test('does not reduce all whitespaces when escaped', () => {
-  const escapedWhitespaces =
-    "' '' '' '\\f\\n\\r\\t\\v\\u00a0\\u1680\\u2000\\u2001\\u2002\\u2003\\u2004\\u2005\\u2006\\u2007\\u2008\\u2009\\u200a\\u2028\\u2029\\u202f\\u205f\\u3000\\ufeff";
+  const escapedWhitespaces = "' '' '' '\\f\\n\\r\\t\\v\\u00a0\\u1680\\u2000\\u2001\\u2002\\u2003\\u2004\\u2005\\u2006\\u2007\\u2008\\u2009\\u200a\\u2028\\u2029\\u202f\\u205f\\u3000\\ufeff";
   const source = `let a = \`${escapedWhitespaces}\`;`;
   const mockBuildResult = createMockBuildResult(source);
   const returned = minifyTemplates(mockBuildResult);
@@ -611,8 +610,7 @@ let view = h\`
     </nav>
   </header>
 \`;`;
-const stage1TemplateMin =
-  '\nlet view = h`<header><nav><!-- comm --><h1 #title></h1><a href=#>#link1</a><a href=# #a >#link2</a><a href=#>#link3</a><div> #not a ref </div></nav></header>`;';
+const stage1TemplateMin = '\nlet view = h`<header><nav><!-- comm --><h1 #title></h1><a href=#>#link1</a><a href=# #a >#link2</a><a href=#>#link3</a><div> #not a ref </div></nav></header>`;';
 
 test('removes spaces correctly in complex stage1 template', () => {
   const mockBuildResult = createMockBuildResult(stage1TemplateSrc);
