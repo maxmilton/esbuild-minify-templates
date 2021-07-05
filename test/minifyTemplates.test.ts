@@ -121,7 +121,8 @@ test('reduces all whitespaces to a single space', () => {
   assert.is(getOutput(returned), 'let a = ` `;');
 });
 test('does not reduce all whitespaces when escaped', () => {
-  const escapedWhitespaces = "' '' '' '\\f\\n\\r\\t\\v\\u00a0\\u1680\\u2000\\u2001\\u2002\\u2003\\u2004\\u2005\\u2006\\u2007\\u2008\\u2009\\u200a\\u2028\\u2029\\u202f\\u205f\\u3000\\ufeff";
+  const escapedWhitespaces =
+    "' '' '' '\\f\\n\\r\\t\\v\\u00a0\\u1680\\u2000\\u2001\\u2002\\u2003\\u2004\\u2005\\u2006\\u2007\\u2008\\u2009\\u200a\\u2028\\u2029\\u202f\\u205f\\u3000\\ufeff";
   const source = `let a = \`${escapedWhitespaces}\`;`;
   const mockBuildResult = createMockBuildResult(source);
   const returned = minifyTemplates(mockBuildResult);
@@ -402,6 +403,38 @@ let d = \`   <br>   <br>   <br>   \`;`;
   delete process.env.MINIFY_TAGGED_TEMPLATES_ONLY;
 });
 
+// HTML comments
+
+test('removes HTML comments when MINIFY_HTML_COMMENTS env var is set', () => {
+  process.env.MINIFY_HTML_COMMENTS = 'true';
+  const source = `
+let a = \`<!--   -->\`;
+let b = \`<!--\n\n\n-->\`;
+let c = \`<!--\t\t\t-->\`;
+let d = \`   <!--<br>   <br>   <br>-->   \`;`;
+  const mockBuildResult = createMockBuildResult(source);
+  const returned = minifyTemplates(mockBuildResult);
+  assert.fixture(
+    getOutput(returned),
+    '\nlet a = ``;\nlet b = ``;\nlet c = ``;\nlet d = ``;',
+  );
+  delete process.env.MINIFY_HTML_COMMENTS;
+});
+
+test('does not remove HTML comments by default', () => {
+  const source = `
+let a = \`<!--   -->\`;
+let b = \`<!--\n\n\n-->\`;
+let c = \`<!--\t\t\t-->\`;
+let d = \`   <!--<br>   <br>   <br>-->   \`;`;
+  const mockBuildResult = createMockBuildResult(source);
+  const returned = minifyTemplates(mockBuildResult);
+  assert.fixture(
+    getOutput(returned),
+    '\nlet a = `<!-- -->`;\nlet b = `<!-- -->`;\nlet c = `<!-- -->`;\nlet d = `<!--<br><br><br>-->`;',
+  );
+});
+
 // JS sourcemaps
 
 test('generates a new sourcemap', () => {
@@ -578,7 +611,8 @@ let view = h\`
     </nav>
   </header>
 \`;`;
-const stage1TemplateMin = '\nlet view = h`<header><nav><!-- comm --><h1 #title></h1><a href=#>#link1</a><a href=# #a >#link2</a><a href=#>#link3</a><div> #not a ref </div></nav></header>`;';
+const stage1TemplateMin =
+  '\nlet view = h`<header><nav><!-- comm --><h1 #title></h1><a href=#>#link1</a><a href=# #a >#link2</a><a href=#>#link3</a><div> #not a ref </div></nav></header>`;';
 
 test('removes spaces correctly in complex stage1 template', () => {
   const mockBuildResult = createMockBuildResult(stage1TemplateSrc);
