@@ -52,7 +52,17 @@ esbuild
 
 ## Options
 
-#### Tagged template literals only
+### Remove HTML comments
+
+By default HTML comments are left in place (but whitespace etc. will still be minified within them). If you wish to remove HTML comments set the `MINIFY_HTML_COMMENTS` environment variable to a non-empty string.
+
+`build.mjs`:
+
+```js
+process.env.MINIFY_HTML_COMMENTS = 'true';
+```
+
+### Tagged template literals only
 
 Only minify tagged template literals (instead of all template literals) by setting the `MINIFY_TAGGED_TEMPLATES_ONLY` environment variable to a non-empty string.
 

@@ -59,7 +59,7 @@ export function minify(code: string): MagicString {
       const { start, end } = node.loc;
 
       if (start.line !== end.line || start.column !== end.column) {
-        const content = node.value.raw
+        let content = node.value.raw
           // reduce whitespace to a single space
           .replace(/\s+/gm, ' ')
           // remove space between tags
@@ -70,6 +70,10 @@ export function minify(code: string): MagicString {
           // remove space around stage1 "node ref tags"
           // https://github.com/MaxMilton/stage1
           .replace(/> #(\w+) </g, '>#$1<');
+
+        if (process.env.MINIFY_HTML_COMMENTS) {
+          content = content.replace(/<!--.*?-->/gs, '');
+        }
 
         out.overwrite(node.start, node.end, content);
       }

@@ -402,6 +402,38 @@ let d = \`   <br>   <br>   <br>   \`;`;
   delete process.env.MINIFY_TAGGED_TEMPLATES_ONLY;
 });
 
+// HTML comments
+
+test('removes HTML comments when MINIFY_HTML_COMMENTS env var is set', () => {
+  process.env.MINIFY_HTML_COMMENTS = 'true';
+  const source = `
+let a = \`<!--   -->\`;
+let b = \`<!--\n\n\n-->\`;
+let c = \`<!--\t\t\t-->\`;
+let d = \`   <!--<br>   <br>   <br>-->   \`;`;
+  const mockBuildResult = createMockBuildResult(source);
+  const returned = minifyTemplates(mockBuildResult);
+  assert.fixture(
+    getOutput(returned),
+    '\nlet a = ``;\nlet b = ``;\nlet c = ``;\nlet d = ``;',
+  );
+  delete process.env.MINIFY_HTML_COMMENTS;
+});
+
+test('does not remove HTML comments by default', () => {
+  const source = `
+let a = \`<!--   -->\`;
+let b = \`<!--\n\n\n-->\`;
+let c = \`<!--\t\t\t-->\`;
+let d = \`   <!--<br>   <br>   <br>-->   \`;`;
+  const mockBuildResult = createMockBuildResult(source);
+  const returned = minifyTemplates(mockBuildResult);
+  assert.fixture(
+    getOutput(returned),
+    '\nlet a = `<!-- -->`;\nlet b = `<!-- -->`;\nlet c = `<!-- -->`;\nlet d = `<!--<br><br><br>-->`;',
+  );
+});
+
 // JS sourcemaps
 
 test('generates a new sourcemap', () => {
