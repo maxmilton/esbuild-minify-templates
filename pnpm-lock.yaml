@@ -139,6 +139,7 @@ packages:
 
   /@types/estree/0.0.45:
     resolution: {integrity: sha512-jnqIUKDUqJbDIUxm0Uj7bnlMnRm1T/eZ9N+AVMqhPgzrba2GhGG5o/jCTwmdPK709nEZsGoMzXEDUjcXHa3W0g==}
+    requiresBuild: true
     dev: false
     optional: true
 
