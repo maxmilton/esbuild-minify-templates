@@ -23,7 +23,7 @@
     "test": "c8 --all --include=src --reporter=text --reporter=lcovonly uvu -r esbuild-register test '\\.test\\.ts$'"
   },
   "peerDependencies": {
-    "esbuild": "^0.10.0 || ^0.11.0 || ^0.12.0"
+    "esbuild": "^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0"
   },
   "dependencies": {
     "@ampproject/remapping": "^1.0.1",
@@ -36,7 +36,7 @@
     "@typescript-eslint/eslint-plugin": "4.31.1",
     "@typescript-eslint/parser": "4.31.1",
     "c8": "7.9.0",
-    "esbuild": "0.12.28",
+    "esbuild": "0.13.4",
     "esbuild-register": "3.0.0",
     "eslint": "7.32.0",
     "eslint-config-airbnb-base": "14.2.1",
