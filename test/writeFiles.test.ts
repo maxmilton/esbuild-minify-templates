@@ -71,4 +71,41 @@ test('correctly writes UTF-8 encoded text', async () => {
   assert.is(result, text);
 });
 
+test('creates directories before writing files', async () => {
+  const dir = getTempDir(`test${count++}`);
+  const filename1 = 'dir1/file1.txt';
+  const filename2 = 'dir1/dir2/file2.txt';
+  const filename3 = 'dir3/dir4/dir5/file3.txt';
+  const mockBuildResult = {
+    outputFiles: [
+      createMockBuildResult('', dir, filename1).outputFiles![0],
+      createMockBuildResult('', dir, filename2).outputFiles![0],
+      createMockBuildResult('', dir, filename3).outputFiles![0],
+    ],
+    errors: [],
+    warnings: [],
+  };
+  await writeFiles(mockBuildResult);
+  const result = await Promise.all([
+    fs.promises.stat(path.join(dir, 'dir1')),
+    fs.promises.stat(path.join(dir, 'dir1/dir2')),
+    fs.promises.stat(path.join(dir, 'dir3/dir4/dir5')),
+    fs.promises.stat(path.join(dir, filename1)),
+    fs.promises.stat(path.join(dir, filename2)),
+    fs.promises.stat(path.join(dir, filename3)),
+  ]);
+  assert.ok(result[0].isDirectory());
+  assert.ok(result[1].isDirectory());
+  assert.ok(result[2].isDirectory());
+  assert.ok(result[3].isFile());
+  assert.ok(result[4].isFile());
+  assert.ok(result[5].isFile());
+  assert.not(result[0].isSymbolicLink());
+  assert.not(result[1].isSymbolicLink());
+  assert.not(result[2].isSymbolicLink());
+  assert.not(result[3].isSymbolicLink());
+  assert.not(result[4].isSymbolicLink());
+  assert.not(result[5].isSymbolicLink());
+});
+
 test.run();
