@@ -103,7 +103,7 @@ See [releases on GitHub](https://github.com/maxmilton/esbuild-minify-templates/r
 
 ## Licence
 
-`esbuild-minify-templates` is an MIT licensed open source project. See [LICENCE](https://github.com/maxmilton/esbuild-minify-templates/blob/master/LICENCE).
+MIT license. See [LICENSE](https://github.com/maxmilton/esbuild-minify-templates/blob/master/LICENSE).
 
 ---
 
