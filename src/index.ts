@@ -135,7 +135,11 @@ export async function writeFiles(buildResult: BuildResult): Promise<void> {
     const results: Promise<void>[] = [];
 
     buildResult.outputFiles.forEach((file) => {
-      results.push(fs.promises.writeFile(file.path, file.contents, 'utf8'));
+      results.push(
+        fs.promises
+          .mkdir(path.dirname(file.path), { recursive: true })
+          .then(() => fs.promises.writeFile(file.path, file.contents, 'utf8')),
+      );
     });
 
     await Promise.all(results);
