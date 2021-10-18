@@ -108,4 +108,27 @@ test('creates directories before writing files', async () => {
   assert.not(result[5].isSymbolicLink());
 });
 
+test('does not write files when no outputFiles', async () => {
+  const dir = getTempDir(`test${count++}`);
+  const mockBuildResult = {
+    errors: [],
+    warnings: [],
+  };
+  await writeFiles(mockBuildResult);
+  const files = await fs.promises.readdir(dir);
+  assert.is(files.length, 0);
+});
+
+test('does not write files when zero outputFiles', async () => {
+  const dir = getTempDir(`test${count++}`);
+  const mockBuildResult = {
+    outputFiles: [],
+    errors: [],
+    warnings: [],
+  };
+  await writeFiles(mockBuildResult);
+  const files = await fs.promises.readdir(dir);
+  assert.is(files.length, 0);
+});
+
 test.run();
