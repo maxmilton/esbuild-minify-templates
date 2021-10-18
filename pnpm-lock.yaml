@@ -8,7 +8,6 @@ specifiers:
   astray: ^1.1.1
   c8: 7.10.0
   esbuild: 0.13.8
-  esbuild-register: 3.0.0
   eslint: 7.32.0
   eslint-config-airbnb-base: 14.2.1
   eslint-config-airbnb-typescript: 14.0.0
@@ -16,6 +15,7 @@ specifiers:
   magic-string: ^0.25.7
   meriyah: ^4.1.5
   prettier: 2.4.1
+  tsm: 2.1.2
   typescript: 4.4.4
   uvu: 0.5.2
 
@@ -31,12 +31,12 @@ devDependencies:
   '@typescript-eslint/parser': 5.0.0_eslint@7.32.0+typescript@4.4.4
   c8: 7.10.0
   esbuild: 0.13.8
-  esbuild-register: 3.0.0_esbuild@0.13.8
   eslint: 7.32.0
   eslint-config-airbnb-base: 14.2.1_560ef94424f7023f0ab025f67f79aa67
   eslint-config-airbnb-typescript: 14.0.0_581fbbaaf48060ddae82563a055b6700
   eslint-plugin-import: 2.25.2_eslint@7.32.0
   prettier: 2.4.1
+  tsm: 2.1.2
   typescript: 4.4.4
   uvu: 0.5.2
 
@@ -698,15 +698,6 @@ packages:
     dev: true
     optional: true
 
-  /esbuild-register/3.0.0_esbuild@0.13.8:
-    resolution: {integrity: sha512-No7U3ZUd6gPrrC6gqdb3XFcf2lNqzn8nvQXcgcyOl8szMVuN6YUvOplnmakxWyogI9d8SiJMl0uzBzJck+Aoxw==}
-    peerDependencies:
-      esbuild: '>=0.12 <1'
-    dependencies:
-      esbuild: 0.13.8
-      jsonc-parser: 3.0.0
-    dev: true
-
   /esbuild-sunos-64/0.13.8:
     resolution: {integrity: sha512-mWPZibmBbuMKD+LDN23LGcOZ2EawMYBONMXXHmbuxeT0XxCNwadbCVwUQ/2p5Dp5Kvf6mhrlIffcnWOiCBpiVw==}
     cpu: [x64]
@@ -1356,10 +1347,6 @@ packages:
       minimist: 1.2.5
     dev: true
 
-  /jsonc-parser/3.0.0:
-    resolution: {integrity: sha512-fQzRfAbIBnR0IQvftw9FJveWiHp72Fg20giDrHz6TdfB12UH/uue0D3hm57UB5KgAVuniLMCaS8P1IMj9NR7cA==}
-    dev: true
-
   /kleur/4.1.4:
     resolution: {integrity: sha512-8QADVssbrFjivHWQU7KkMgptGTl6WAcSdlbBPY4uNF+mWr6DGcKrvY2w4FQJoXch7+fKMjj0dRrL75vk3k23OA==}
     engines: {node: '>=6'}
@@ -1852,6 +1839,14 @@ packages:
 
   /tslib/1.14.1:
     resolution: {integrity: sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==}
+    dev: true
+
+  /tsm/2.1.2:
+    resolution: {integrity: sha512-1jF8LNTRcPsw15ajZK2ra3RA2PSCdVGvJzF/Q1TCsu1tH2dY59HgNWxhttN2s1mfJUFoattjf9QZ410u5bgtJQ==}
+    engines: {node: '>=12'}
+    hasBin: true
+    dependencies:
+      esbuild: 0.13.8
     dev: true
 
   /tsutils/3.21.0_typescript@4.4.4:

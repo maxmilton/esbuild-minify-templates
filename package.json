@@ -20,7 +20,7 @@
     "lint:js": "eslint --ignore-path .gitignore --ext .ts,.js,.mjs,.cjs .",
     "lint:ts": "tsc --noEmit",
     "prebuild": "rm -rf dist; mkdir dist",
-    "test": "c8 --all --include=src --reporter=text --reporter=lcovonly uvu -r esbuild-register test '\\.test\\.ts$'"
+    "test": "c8 --all --include=src --reporter=text --reporter=lcovonly uvu -r tsm test '\\.test\\.ts$'"
   },
   "peerDependencies": {
     "esbuild": "^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0"
@@ -37,12 +37,12 @@
     "@typescript-eslint/parser": "5.0.0",
     "c8": "7.10.0",
     "esbuild": "0.13.8",
-    "esbuild-register": "3.0.0",
     "eslint": "7.32.0",
     "eslint-config-airbnb-base": "14.2.1",
     "eslint-config-airbnb-typescript": "14.0.0",
     "eslint-plugin-import": "2.25.2",
     "prettier": "2.4.1",
+    "tsm": "2.1.2",
     "typescript": "4.4.4",
     "uvu": "0.5.2"
   },
