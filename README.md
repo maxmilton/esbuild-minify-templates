@@ -13,7 +13,7 @@ Tool to minify [template literal strings](https://developer.mozilla.org/en-US/do
 - Collapses whitespace in template literal strings
 - Removes whitespace in template literal strings around HTML tags
 - Source map support
-- Ability to ignore specific template literals
+- Ignore specific template literals
 
 ## Installation
 
@@ -50,6 +50,29 @@ esbuild
   });
 ```
 
+### Production only
+
+If you only want to minify templates in certain builds, set the [esbuild `write` option](https://esbuild.github.io/api/#write) to `true` when you want to skip minification. The `minifyTemplates` and `writeFiles` functions will do nothing in this case. For example:
+
+```js
+esbuild.build({
+  ...
+  write: process.env.NODE_ENV !== 'production',
+})
+```
+
+### Standalone minification
+
+Minification can also be used separately. The `minify` function takes JavaScript source code as input and will minify template literals within it.
+
+```js
+import { minify } from 'esbuild-minify-templates';
+
+const result = minify('let a = `x     y`;');
+
+console.log(result.toString()); // 'let a = `x y`;'
+```
+
 ## Options
 
 ### Remove HTML comments
@@ -76,7 +99,7 @@ process.env.MINIFY_TAGGED_TEMPLATES_ONLY = 'true';
 
 If you run into a situation where you don't want a certain template literal string to be minified, you can add a `/* minify-templates-ignore */` block comment on the line directly before it. This is especially useful for using template literals with the `RegExp` constructor or otherwise in situations where whitespace is meaningful.
 
-> Note: This will only work with the esbuild `minify` option set to `false` because esbuild automatically removes the comments before we can read them. It's a known issue and we're exploring options for making this work with minify.
+> Note: This will only work with the [esbuild `minify` option](https://esbuild.github.io/api/#minify) set to `false` because otherwise esbuild removes the comments before we can read them. The recommended solution is to pass the output into another minification tool like [terser](https://github.com/terser/terser) which has the added benfit of generating a [1–2% smaller output](https://github.com/privatenumber/minification-benchmarks#-results) than esbuild's minification (but is much slower).
 
 `ignore-examples.js`:
 
