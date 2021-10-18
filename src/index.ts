@@ -26,7 +26,10 @@ const decoder = new TextDecoder();
 export const encodeUTF8 = (text: string): Uint8Array => encoder.encode(text);
 export const decodeUTF8 = (bytes: Uint8Array): string => decoder.decode(bytes);
 
-export function minify(code: string): MagicString {
+export function minify(
+  code: string,
+  opts: { taggedTemplatesOnly?: boolean; removeComments?: boolean } = {},
+): MagicString {
   const out = new MagicString(code);
   const ignoreLines: number[] = [];
   const ast = parse(code, {
@@ -48,7 +51,7 @@ export function minify(code: string): MagicString {
       if (ignoreLines.includes(node.loc.start.line)) return SKIP;
 
       if (
-        process.env.MINIFY_TAGGED_TEMPLATES_ONLY
+        opts.taggedTemplatesOnly
         && node.path!.parent
         && node.path!.parent.type !== 'TaggedTemplateExpression'
       ) {
@@ -71,7 +74,7 @@ export function minify(code: string): MagicString {
           // https://github.com/MaxMilton/stage1
           .replace(/> #(\w+) </g, '>#$1<');
 
-        if (process.env.MINIFY_HTML_COMMENTS) {
+        if (opts.removeComments) {
           content = content.replace(/<!--.*?-->/gs, '');
         }
 
@@ -92,7 +95,10 @@ export function minifyTemplates(buildResult: BuildResult): BuildResult {
       if (path.extname(file.path) !== '.js') return;
 
       const src = decodeUTF8(file.contents);
-      const out = minify(src);
+      const out = minify(src, {
+        taggedTemplatesOnly: !!process.env.MINIFY_TAGGED_TEMPLATES_ONLY,
+        removeComments: !!process.env.MINIFY_HTML_COMMENTS,
+      });
 
       outputFiles[fileIndex].contents = encodeUTF8(out.toString());
 
