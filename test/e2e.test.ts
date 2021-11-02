@@ -13,6 +13,8 @@ let count = 0;
 test.before(createTempDir);
 test.after(deleteTempDir);
 
+// TODO: Test incremental builds and watch mode
+
 test('build runs without error', async () => {
   const dir = getTempDir(`test${count++}`);
   const srcfile = path.join(dir, 'index.ts');
@@ -24,18 +26,65 @@ test('build runs without error', async () => {
     console.log(a);`,
     'utf8',
   );
-  const built = await esbuild.build({
+  await esbuild.build({
     entryPoints: [srcfile],
     outfile,
     bundle: true,
     platform: 'node',
     minifyWhitespace: true,
     write: false,
+    plugins: [minifyTemplates(), writeFiles()],
   });
-  const minified = minifyTemplates(built);
-  await writeFiles(minified);
   const result = await fs.promises.readFile(outfile, 'utf8');
   assert.fixture(result, 'var a=`<a>b </a>`;console.log(a);\n');
+});
+
+test('does not minify when build write is true', async () => {
+  const dir = getTempDir(`test${count++}`);
+  const srcfile = path.join(dir, 'index.ts');
+  const outfile = path.join(dir, 'index.js');
+  const source = `
+    const a = \` \n\n\n   <a>b   </a>   \n\n  \`;
+    console.log(a);
+  `;
+  await fs.promises.writeFile(srcfile, source, 'utf8');
+  await esbuild.build({
+    entryPoints: [srcfile],
+    outfile,
+    bundle: true,
+    platform: 'node',
+    minifyWhitespace: true,
+    write: true,
+    plugins: [minifyTemplates(), writeFiles()],
+  });
+  const result = await fs.promises.readFile(outfile, 'utf8');
+  assert.fixture(
+    result,
+    'var a=` \n\n\n   <a>b   </a>   \n\n  `;console.log(a);\n',
+  );
+});
+test('does not minify when build write is the default (undefined)', async () => {
+  const dir = getTempDir(`test${count++}`);
+  const srcfile = path.join(dir, 'index.ts');
+  const outfile = path.join(dir, 'index.js');
+  const source = `
+    const a = \` \n\n\n   <a>b   </a>   \n\n  \`;
+    console.log(a);
+  `;
+  await fs.promises.writeFile(srcfile, source, 'utf8');
+  await esbuild.build({
+    entryPoints: [srcfile],
+    outfile,
+    bundle: true,
+    platform: 'node',
+    minifyWhitespace: true,
+    plugins: [minifyTemplates(), writeFiles()],
+  });
+  const result = await fs.promises.readFile(outfile, 'utf8');
+  assert.fixture(
+    result,
+    'var a=` \n\n\n   <a>b   </a>   \n\n  `;console.log(a);\n',
+  );
 });
 
 test.run();

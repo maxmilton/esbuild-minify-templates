@@ -24,16 +24,16 @@ test('has no unexpected exports', () => {
   publicExports.forEach((publicExport) => {
     exportNames.delete(publicExport[0]);
   });
-  // synthetic default created by esbuild -- follows the ESM spec where default
-  // is an object containing references to all the named exports
+  // Synthetic default created by esbuild at test runtime -- follows ESM spec
+  // where default is an object containing references to all the named exports
   exportNames.delete('default');
   assert.equal([...exportNames], []);
 });
 
 test('does not have a default export', () => {
-  // @ts-expect-error - synthetic default created by esbuild
+  // @ts-expect-error - Synthetic default created by esbuild at test runtime
   assert.type(allExports.default, 'object');
-  // @ts-expect-error - synthetic default created by esbuild
+  // @ts-expect-error - Synthetic default created by esbuild at test runtime
   assert.is(allExports.default.default, undefined);
   const bundle = require('../dist/index.js'); // eslint-disable-line
   assert.type(bundle, 'object');
