@@ -1,14 +1,33 @@
-import type { BuildResult } from 'esbuild';
+import type esbuild from 'esbuild';
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
 import { decodeUTF8, encodeUTF8 } from '../src/index';
 
+export function esbuildTestHarness(
+  { setup }: esbuild.Plugin,
+  buildResult: esbuild.BuildResult,
+  buildOptions?: esbuild.BuildOptions,
+) {
+  let cb: Parameters<esbuild.PluginBuild['onEnd']>[0] | undefined;
+  // eslint-disable-next-line no-void
+  void setup({
+    initialOptions: {
+      write: false,
+      ...buildOptions,
+    },
+    onEnd(callback) {
+      cb = callback;
+    },
+  } as esbuild.PluginBuild);
+  return cb && cb(buildResult);
+}
+
 export function createMockBuildResult(
   content: string,
   dirPath = '.',
   fileName = 'mock.js',
-): BuildResult {
+): esbuild.BuildResult {
   return {
     outputFiles: [
       {

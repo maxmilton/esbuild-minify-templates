@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion, no-plusplus */
 
-import fs from 'fs';
+import fs from 'fs/promises';
 import path from 'path';
 import { test } from 'uvu';
 import * as assert from 'uvu/assert';
@@ -9,6 +9,7 @@ import {
   createMockBuildResult,
   createTempDir,
   deleteTempDir,
+  esbuildTestHarness,
   getTempDir,
 } from './utils';
 
@@ -22,8 +23,8 @@ test('writes single file to disk', async () => {
   const filename = 'mock.txt';
   const text = 'abc';
   const mockBuildResult = createMockBuildResult(text, dir, filename);
-  await writeFiles(mockBuildResult);
-  const result = await fs.promises.readFile(path.join(dir, filename), 'utf-8');
+  await esbuildTestHarness(writeFiles(), mockBuildResult);
+  const result = await fs.readFile(path.join(dir, filename), 'utf-8');
   assert.is(result, text);
 });
 
@@ -50,13 +51,13 @@ test('writes multiple files to disk', async () => {
     errors: [],
     warnings: [],
   };
-  await writeFiles(mockBuildResult);
+  await esbuildTestHarness(writeFiles(), mockBuildResult);
   const result = await Promise.all([
-    fs.promises.readFile(path.join(dir, filename1), 'utf-8'),
-    fs.promises.readFile(path.join(dir, filename2), 'utf-8'),
-    fs.promises.readFile(path.join(dir, filename3), 'utf-8'),
-    fs.promises.readFile(path.join(dir, filename4), 'utf-8'),
-    fs.promises.readFile(path.join(dir, filename5), 'utf-8'),
+    fs.readFile(path.join(dir, filename1), 'utf-8'),
+    fs.readFile(path.join(dir, filename2), 'utf-8'),
+    fs.readFile(path.join(dir, filename3), 'utf-8'),
+    fs.readFile(path.join(dir, filename4), 'utf-8'),
+    fs.readFile(path.join(dir, filename5), 'utf-8'),
   ]);
   assert.equal(result, [text1, text2, text3, text4, text5]);
 });
@@ -66,8 +67,8 @@ test('correctly writes UTF-8 encoded text', async () => {
   const filename = 'mock.txt';
   const text = 'a\u00a0b\u2003c\u3000d 🤔👾💣';
   const mockBuildResult = createMockBuildResult(text, dir, filename);
-  await writeFiles(mockBuildResult);
-  const result = await fs.promises.readFile(path.join(dir, filename), 'utf-8');
+  await esbuildTestHarness(writeFiles(), mockBuildResult);
+  const result = await fs.readFile(path.join(dir, filename), 'utf-8');
   assert.is(result, text);
 });
 
@@ -85,14 +86,14 @@ test('creates directories before writing files', async () => {
     errors: [],
     warnings: [],
   };
-  await writeFiles(mockBuildResult);
+  await esbuildTestHarness(writeFiles(), mockBuildResult);
   const result = await Promise.all([
-    fs.promises.stat(path.join(dir, 'dir1')),
-    fs.promises.stat(path.join(dir, 'dir1/dir2')),
-    fs.promises.stat(path.join(dir, 'dir3/dir4/dir5')),
-    fs.promises.stat(path.join(dir, filename1)),
-    fs.promises.stat(path.join(dir, filename2)),
-    fs.promises.stat(path.join(dir, filename3)),
+    fs.stat(path.join(dir, 'dir1')),
+    fs.stat(path.join(dir, 'dir1/dir2')),
+    fs.stat(path.join(dir, 'dir3/dir4/dir5')),
+    fs.stat(path.join(dir, filename1)),
+    fs.stat(path.join(dir, filename2)),
+    fs.stat(path.join(dir, filename3)),
   ]);
   assert.ok(result[0].isDirectory());
   assert.ok(result[1].isDirectory());
@@ -108,26 +109,21 @@ test('creates directories before writing files', async () => {
   assert.not(result[5].isSymbolicLink());
 });
 
-test('does not write files when no outputFiles', async () => {
+test('does not write files when build write is true', async () => {
   const dir = getTempDir(`test${count++}`);
-  const mockBuildResult = {
-    errors: [],
-    warnings: [],
-  };
-  await writeFiles(mockBuildResult);
-  const files = await fs.promises.readdir(dir);
+  const filename = 'mock.txt';
+  const mockBuildResult = createMockBuildResult('', dir, filename);
+  await esbuildTestHarness(writeFiles(), mockBuildResult, { write: true });
+  const files = await fs.readdir(dir);
   assert.is(files.length, 0);
 });
-
-test('does not write files when zero outputFiles', async () => {
+test('does not write files when build write is undefined', async () => {
   const dir = getTempDir(`test${count++}`);
-  const mockBuildResult = {
-    outputFiles: [],
-    errors: [],
-    warnings: [],
-  };
-  await writeFiles(mockBuildResult);
-  const files = await fs.promises.readdir(dir);
+  const filename = 'mock.txt';
+  const mockBuildResult = createMockBuildResult('', dir, filename);
+  // @ts-expect-error - undefined is the default value
+  await esbuildTestHarness(writeFiles(), mockBuildResult, { write: undefined });
+  const files = await fs.readdir(dir);
   assert.is(files.length, 0);
 });
 

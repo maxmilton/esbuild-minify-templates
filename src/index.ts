@@ -1,10 +1,8 @@
-/* eslint-disable consistent-return, no-param-reassign */
-
 import remapping from '@ampproject/remapping';
 import { ESTreeMap, SKIP, walk } from 'astray';
-import type { BuildResult } from 'esbuild';
+import type { Plugin } from 'esbuild';
 import type { SourceLocation } from 'estree';
-import fs from 'fs';
+import fs from 'fs/promises';
 import MagicString from 'magic-string';
 import { parse } from 'meriyah';
 import path from 'path';
@@ -19,6 +17,11 @@ type ESTreeMapExtra<M = ESTreeMap> = {
   };
 };
 
+interface MinifyOptions {
+  taggedOnly?: boolean;
+  keepComments?: boolean;
+}
+
 // Same encode/decode as esbuild
 // https://github.com/evanw/esbuild/blob/4dfd1b6ae07892f1e8f5a6712fc67301e19a1b24/lib/shared/stdio_protocol.ts#L353-L391
 const encoder = new TextEncoder();
@@ -26,10 +29,7 @@ const decoder = new TextDecoder();
 export const encodeUTF8 = (text: string): Uint8Array => encoder.encode(text);
 export const decodeUTF8 = (bytes: Uint8Array): string => decoder.decode(bytes);
 
-export function minify(
-  code: string,
-  opts: { taggedTemplatesOnly?: boolean; removeComments?: boolean } = {},
-): MagicString {
+export function minify(code: string, opts: MinifyOptions = {}): MagicString {
   const out = new MagicString(code);
   const ignoreLines: number[] = [];
   const ast = parse(code, {
@@ -47,16 +47,12 @@ export function minify(
 
   walk<typeof ast, void, ESTreeMapExtra>(ast, {
     TemplateLiteral(node) {
-      // don't modify current or any nested templates if it's ignored
-      if (ignoreLines.includes(node.loc.start.line)) return SKIP;
-
-      if (
-        opts.taggedTemplatesOnly
-        && node.path!.parent
-        && node.path!.parent.type !== 'TaggedTemplateExpression'
-      ) {
-        return SKIP;
-      }
+      return ignoreLines.includes(node.loc.start.line)
+        || (opts.taggedOnly
+          && node.path!.parent
+          && node.path!.parent.type !== 'TaggedTemplateExpression')
+        ? SKIP
+        : undefined;
     },
     TemplateElement(node) {
       const { start, end } = node.loc;
@@ -74,7 +70,7 @@ export function minify(
           // https://github.com/MaxMilton/stage1
           .replace(/> #(\w+) </g, '>#$1<');
 
-        if (opts.removeComments) {
+        if (!opts.keepComments) {
           content = content.replace(/<!--.*?-->/gs, '');
         }
 
@@ -86,68 +82,66 @@ export function minify(
   return out;
 }
 
-/**
- * Minify template literal strings in `.js` files built by esbuild.
- */
-export function minifyTemplates(buildResult: BuildResult): BuildResult {
-  if (buildResult.outputFiles) {
-    buildResult.outputFiles.forEach((file, fileIndex, outputFiles) => {
-      if (path.extname(file.path) !== '.js') return;
+export const minifyTemplates = (opts: MinifyOptions = {}): Plugin => ({
+  name: 'minify-templates',
+  setup(build) {
+    if (build.initialOptions.write !== false) return;
 
-      const src = decodeUTF8(file.contents);
-      const out = minify(src, {
-        taggedTemplatesOnly: !!process.env.MINIFY_TAGGED_TEMPLATES_ONLY,
-        removeComments: !!process.env.MINIFY_HTML_COMMENTS,
+    build.onEnd((result) => {
+      result.outputFiles!.forEach((file, fileIndex, outputFiles) => {
+        if (path.extname(file.path) !== '.js') return;
+
+        const src = decodeUTF8(file.contents);
+        const out = minify(src, opts);
+
+        // eslint-disable-next-line no-param-reassign
+        outputFiles[fileIndex].contents = encodeUTF8(out.toString());
+
+        const matchingMapIndex = outputFiles.findIndex(
+          (outputFile) => outputFile.path === `${file.path}.map`,
+        );
+
+        if (matchingMapIndex > -1) {
+          const mapFile = outputFiles[matchingMapIndex];
+          const remapped = remapping(
+            [
+              // our source map from minifying
+              {
+                ...out.generateDecodedMap({
+                  source: file.path,
+                  file: mapFile.path,
+                  hires: true,
+                }),
+                version: 3,
+              },
+              // esbuild generated source map
+              decodeUTF8(mapFile.contents),
+            ],
+            // don't load other source maps; referenced files are the original source
+            () => null,
+          );
+
+          // eslint-disable-next-line no-param-reassign
+          outputFiles[matchingMapIndex].contents = encodeUTF8(
+            remapped.toString(),
+          );
+        }
       });
-
-      outputFiles[fileIndex].contents = encodeUTF8(out.toString());
-
-      const matchingMapIndex = outputFiles.findIndex(
-        (outputFile) => outputFile.path === `${file.path}.map`,
-      );
-
-      if (matchingMapIndex > -1) {
-        const mapFile = outputFiles[matchingMapIndex];
-        const remapped = remapping(
-          [
-            // our source map from minifying
-            {
-              ...out.generateDecodedMap({
-                source: file.path,
-                file: mapFile.path,
-                hires: true,
-              }),
-              version: 3,
-            },
-            // esbuild generated source map
-            decodeUTF8(mapFile.contents),
-          ],
-          // don't load other source maps; referenced files are the original source
-          () => null,
-        );
-
-        outputFiles[matchingMapIndex].contents = encodeUTF8(
-          remapped.toString(),
-        );
-      }
     });
-  }
+  },
+});
 
-  return buildResult;
-}
+export const writeFiles = (): Plugin => ({
+  name: 'write-files',
+  setup(build) {
+    if (build.initialOptions.write !== false) return;
 
-export async function writeFiles(buildResult: BuildResult): Promise<void> {
-  if (buildResult.outputFiles) {
-    const results: Promise<void>[] = [];
-
-    buildResult.outputFiles.forEach((file) => {
-      results.push(
-        fs.promises
+    build.onEnd(
+      (result) => Promise.all(
+        result.outputFiles!.map((file) => fs
           .mkdir(path.dirname(file.path), { recursive: true })
-          .then(() => fs.promises.writeFile(file.path, file.contents, 'utf8')),
-      );
-    });
-
-    await Promise.all(results);
-  }
-}
+          .then(() => fs.writeFile(file.path, file.contents, 'utf8'))),
+      ) as unknown as Promise<void>, // as long as we return a Promise it's fine
+    );
+  },
+});
