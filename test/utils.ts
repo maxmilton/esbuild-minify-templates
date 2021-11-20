@@ -4,12 +4,14 @@ import os from 'os';
 import path from 'path';
 import { decodeUTF8, encodeUTF8 } from '../src/index';
 
+type OnEndCallback = Parameters<esbuild.PluginBuild['onEnd']>[0];
+
 export function esbuildTestHarness(
   { setup }: esbuild.Plugin,
   buildResult: esbuild.BuildResult,
   buildOptions?: esbuild.BuildOptions,
-) {
-  let cb: Parameters<esbuild.PluginBuild['onEnd']>[0] | undefined;
+): ReturnType<OnEndCallback> | undefined {
+  let cb: OnEndCallback | undefined;
   // eslint-disable-next-line no-void
   void setup({
     initialOptions: {
