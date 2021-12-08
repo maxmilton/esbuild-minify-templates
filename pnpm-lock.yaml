@@ -2,7 +2,7 @@ lockfileVersion: 5.3
 
 specifiers:
   '@ampproject/remapping': ^1.0.1
-  '@types/node': 16.11.11
+  '@types/node': 16.11.12
   '@typescript-eslint/eslint-plugin': 5.6.0
   '@typescript-eslint/parser': 5.6.0
   astray: ^1.1.1
@@ -26,7 +26,7 @@ dependencies:
   meriyah: 4.2.0
 
 devDependencies:
-  '@types/node': 16.11.11
+  '@types/node': 16.11.12
   '@typescript-eslint/eslint-plugin': 5.6.0_16d83f5c41c3abb1061a82b07c18e4f3
   '@typescript-eslint/parser': 5.6.0_eslint@8.4.1+typescript@4.5.2
   c8: 7.10.0
@@ -135,8 +135,8 @@ packages:
     resolution: {integrity: sha1-7ihweulOEdK4J7y+UnC86n8+ce4=}
     dev: true
 
-  /@types/node/16.11.11:
-    resolution: {integrity: sha512-KB0sixD67CeecHC33MYn+eYARkqTheIRNuu97y2XMjR7Wu3XibO1vaY6VBV6O/a89SPI81cEUIYT87UqUWlZNw==}
+  /@types/node/16.11.12:
+    resolution: {integrity: sha512-+2Iggwg7PxoO5Kyhvsq9VarmPbIelXP070HMImEpbtGCoyWNINQj4wzjbQCXzdHTRXnqufutJb5KAURZANNBAw==}
     dev: true
 
   /@typescript-eslint/eslint-plugin/5.6.0_16d83f5c41c3abb1061a82b07c18e4f3:
