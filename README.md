@@ -88,7 +88,7 @@ If you run into a situation where you don't want a certain template literal stri
 
 > Note: This will only work with the [esbuild `minify` option](https://esbuild.github.io/api/#minify) set to `false` because otherwise esbuild removes the comments before we can read them.
 >
-> A solution is to pass the output into another minification tool like [terser](https://github.com/terser/terser) which has the added benfit of generating a [1–2% smaller output](https://github.com/privatenumber/minification-benchmarks#-results) than esbuild's minification (but is much slower), or back into another esbuild.build() pass.
+> A solution is to pass the output back into a second `esbuild.build()` for minify only. Or use another minification tool like [terser](https://github.com/terser/terser) which has the added benfit of generating a [1–2% smaller output](https://github.com/privatenumber/minification-benchmarks#-results) than esbuild's minification (but is much slower).
 
 `ignore-examples.js`:
 
