@@ -1,6 +1,6 @@
 /* eslint-disable no-plusplus */
 
-import esbuild from 'esbuild';
+import * as esbuild from 'esbuild';
 import fs from 'fs';
 import path from 'path';
 import { test } from 'uvu';

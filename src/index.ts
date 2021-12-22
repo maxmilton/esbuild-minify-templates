@@ -9,9 +9,9 @@ import path from 'path';
 
 type ESTreeMapExtra<M = ESTreeMap> = {
   [K in keyof M]: M[K] & {
-    // added via meriyah "loc" option
+    // Added via meriyah "loc" option
     loc: SourceLocation;
-    // added via meriyah "ranges" option
+    // Added via meriyah "ranges" option
     start: number;
     end: number;
   };
@@ -37,7 +37,6 @@ export function minify(code: string, opts: MinifyOptions = {}): MagicString {
     loc: true,
     ranges: true,
 
-    // XXX: Comments are only available when esbuild has minify as !true
     onComment(type, value, _start, _end, loc) {
       if (type === 'MultiLine' && value.trim() === 'minify-templates-ignore') {
         ignoreLines.push(loc.end.line + 1);
