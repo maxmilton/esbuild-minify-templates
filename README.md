@@ -84,23 +84,27 @@ Place this plugin after plugins which modify build output.
 
 ## Ignoring specific template literals
 
-If you run into a situation where you don't want a certain template literal string to be minified, you can add a `/* minify-templates-ignore */` block comment on the line directly before it. This is especially useful for using template literals with the `RegExp` constructor or otherwise in situations where whitespace is meaningful.
+> Tip: An alternative workaround is to use regular non-template strings for the strings you want to keep untouched.
 
-> Note: This will only work with the [esbuild `minify` option](https://esbuild.github.io/api/#minify) set to `false` because otherwise esbuild removes the comments before we can read them.
+If you run into a situation where you don't want a certain template literal string to be minified, you can add a `/*! minify-templates-ignore */` block comment on the line directly before it. This is especially useful for using template literals with the `RegExp` constructor or otherwise in situations where whitespace is meaningful.
+
+> Note: This will only work with the [esbuild `minify` option](https://esbuild.github.io/api/#minify) set to `false` and [esbuild `legalComments` option](https://esbuild.github.io/api/#legal-comments) set to `'inline'` because, other than legal comments and pure annotations, esbuild strips out all comments before we can read them. See <https://github.com/evanw/esbuild/issues/221>. Minify false is required because currently this plugin's logic is overly simple and works with line offsets.
 >
-> A solution is to pass the output back into a second `esbuild.build()` for minify only. Or use another minification tool like [terser](https://github.com/terser/terser) which has the added benfit of generating a [1–2% smaller output](https://github.com/privatenumber/minification-benchmarks#-results) than esbuild's minification (but is much slower).
+> This feature should be used as a last resort and so is currently not ergonomic to use.
+>
+> A solution for minification is to pass the output back into a second `esbuild.build()` for minify only. Or use another minification tool like [terser](https://github.com/terser/terser) which has the added benfit of generating a [1–2% smaller output](https://github.com/privatenumber/minification-benchmarks#-results) than esbuild's minification (but is much slower).
 
 `ignore-examples.js`:
 
 ```js
 // Dynamically constructed regular expression
 
-/* minify-templates-ignore */
-const re = new RegExp(`   <-- ${commentMsg}`, 'g');
+/*! minify-templates-ignore */
+const re = new RegExp(`    <-- ${commentMsg}`, 'g');
 
 // String where whitespace is meaningful
 
-/* minify-templates-ignore */
+/*! minify-templates-ignore */
 codeEditor.setContent(`
   body {
     font-size: 20px;
