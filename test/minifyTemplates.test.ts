@@ -270,13 +270,16 @@ let d = "   <br>   <br>   <br>   ";`;
 
 // "Ignore comment" feature
 
+// FIXME: These tests are not really doing anything. It's only when actually
+// run with esbuild that any difference is apparent.
+
 test('does not modify template literals with an ignore comment', () => {
   const mockBuildResult = createMockBuildResult(`
-/* minify-templates-ignore */
+/*! minify-templates-ignore */
 let re1 = new RegExp(\`   <-- \${commentMsg}\`, 'gm');
 let re2 = new RegExp(\`   <-- \${commentMsg}\`, 'gm');
 
-/* minify-templates-ignore */
+/*! minify-templates-ignore */
 codeEditor.setContent(\`
   body {
     font-size: 20px;
@@ -293,11 +296,11 @@ codeEditor.setContent(\`
   assert.fixture(
     getOutput(mockBuildResult),
     `
-/* minify-templates-ignore */
+/*! minify-templates-ignore */
 let re1 = new RegExp(\`   <-- \${commentMsg}\`, 'gm');
 let re2 = new RegExp(\`<-- \${commentMsg}\`, 'gm');
 
-/* minify-templates-ignore */
+/*! minify-templates-ignore */
 codeEditor.setContent(\`
   body {
     font-size: 20px;
@@ -310,7 +313,7 @@ codeEditor.setContent(\` body { font-size: 20px; color: coral; } \`);`,
 
 test('does not modify nested template literals when parent has an ignore comment', () => {
   const mockBuildResult = createMockBuildResult(`
-/* minify-templates-ignore */
+/*! minify-templates-ignore */
 let a = \`
 \${\`x   y\`}
 \${h\`x   y\`}
@@ -323,7 +326,7 @@ let b = \`
   assert.fixture(
     getOutput(mockBuildResult),
     `
-/* minify-templates-ignore */
+/*! minify-templates-ignore */
 let a = \`
 \${\`x   y\`}
 \${h\`x   y\`}

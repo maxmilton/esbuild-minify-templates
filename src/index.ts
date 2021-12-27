@@ -38,7 +38,10 @@ export function minify(code: string, opts: MinifyOptions = {}): MagicString {
     ranges: true,
 
     onComment(type, value, _start, _end, loc) {
-      if (type === 'MultiLine' && value.trim() === 'minify-templates-ignore') {
+      if (
+        type === 'MultiLine'
+        && value.trim() === '! minify-templates-ignore'
+      ) {
         ignoreLines.push(loc.end.line + 1);
       }
     },
