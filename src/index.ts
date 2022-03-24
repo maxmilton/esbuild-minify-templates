@@ -20,7 +20,6 @@ type ESTreeMapExtra<M = ESTreeMap> = {
 interface MinifyOptions {
   taggedOnly?: boolean;
   keepComments?: boolean;
-  allowModules?: boolean;
 }
 
 // Same encode/decode as esbuild
@@ -37,7 +36,7 @@ export function minify(code: string, opts: MinifyOptions = {}): MagicString {
     next: true,
     loc: true,
     ranges: true,
-    module: opts.allowModules ?? false,
+    module: true,
 
     onComment(type, value, _start, _end, loc) {
       if (

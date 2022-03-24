@@ -76,13 +76,6 @@ Default: `false`
 
 Only minify [tagged template literals](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals#tagged_templates) (instead of all template literals).
 
-#### `allowModules`
-
-Type: `boolean`  
-Default: `false`
-
-By default javascript modules are not handled. By setting `allowModules` to true, javascript modules will also have template literals minified.
-
 ### `writeFiles()`
 
 The plugin has no options but is required to write out in-memory sources to disk. This must be performed separately because esbuild currently has no way to access or modify build output without setting the `write` build option to false.

@@ -433,6 +433,14 @@ let d = \`   <!--<br>   <br>   <br>-->   \`;`;
   );
 });
 
+// Module javascript
+
+test('minifies module javascript', () => {
+  const mockBuildResult = createMockBuildResult('export const a = `x   y`;');
+  void esbuildTestHarness(minifyTemplates(), mockBuildResult);
+  assert.fixture(getOutput(mockBuildResult), 'export const a = `x y`;');
+});
+
 // JS sourcemaps
 
 test('generates a new sourcemap', () => {
