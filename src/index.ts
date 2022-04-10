@@ -36,6 +36,7 @@ export function minify(code: string, opts: MinifyOptions = {}): MagicString {
     next: true,
     loc: true,
     ranges: true,
+    module: true,
 
     onComment(type, value, _start, _end, loc) {
       if (
