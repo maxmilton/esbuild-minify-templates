@@ -26,10 +26,10 @@
     "esbuild": "^0.14.0"
   },
   "dependencies": {
-    "@ampproject/remapping": "^2.0.1",
+    "@ampproject/remapping": "^2.2.0",
     "astray": "^1.1.1",
-    "magic-string": "^0.26.0",
-    "meriyah": "^4.2.0"
+    "magic-string": "^0.26.1",
+    "meriyah": "^4.2.1"
   },
   "devDependencies": {
     "@types/estree": "0.0.51",
