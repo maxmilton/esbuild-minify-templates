@@ -5,6 +5,7 @@ import * as assert from 'uvu/assert';
 import * as allExports from '../src/index';
 
 const publicExports = [
+  ['stripWhitespace', 'function'],
   ['minify', 'function'],
   ['minifyTemplates', 'function'],
   ['writeFiles', 'function'],
