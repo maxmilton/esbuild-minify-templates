@@ -29,6 +29,26 @@ const decoder = new TextDecoder();
 export const encodeUTF8 = (text: string): Uint8Array => encoder.encode(text);
 export const decodeUTF8 = (bytes: Uint8Array): string => decoder.decode(bytes);
 
+export function stripWhitespace(html: string, keepComments?: boolean): string {
+  let out = html
+    // reduce whitespace to a single space
+    .replace(/\s+/gm, ' ')
+    // remove space between tags
+    .replace(/> </g, '><')
+    // remove space between edge and start/end tags
+    .replace(/^ </g, '<')
+    .replace(/> $/g, '>')
+    // remove space around stage1 "node ref tags"
+    // https://github.com/MaxMilton/stage1
+    .replace(/> #(\w+) </g, '>#$1<');
+
+  if (!keepComments) {
+    out = out.replace(/<!--.*?-->/gs, '');
+  }
+
+  return out;
+}
+
 export function minify(code: string, opts: MinifyOptions = {}): MagicString {
   const out = new MagicString(code);
   const ignoreLines: number[] = [];
@@ -61,23 +81,11 @@ export function minify(code: string, opts: MinifyOptions = {}): MagicString {
       const { start, end } = node.loc;
 
       if (start.line !== end.line || start.column !== end.column) {
-        let content = node.value.raw
-          // reduce whitespace to a single space
-          .replace(/\s+/gm, ' ')
-          // remove space between tags
-          .replace(/> </g, '><')
-          // remove space between edge and start/end tags
-          .replace(/^ </g, '<')
-          .replace(/> $/g, '>')
-          // remove space around stage1 "node ref tags"
-          // https://github.com/MaxMilton/stage1
-          .replace(/> #(\w+) </g, '>#$1<');
-
-        if (!opts.keepComments) {
-          content = content.replace(/<!--.*?-->/gs, '');
-        }
-
-        out.overwrite(node.start, node.end, content);
+        out.overwrite(
+          node.start,
+          node.end,
+          stripWhitespace(node.value.raw, opts.keepComments),
+        );
       }
     },
   });

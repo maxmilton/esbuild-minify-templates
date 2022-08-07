@@ -115,7 +115,11 @@ codeEditor.setContent(`
 
 ## Standalone minification
 
+### Template literals
+
 You can also do template literal minification separately. The `minify` function takes JavaScript source code as input and will minify template literals within it. It also takes the same options as `minifyTemplates` as a second argument.
+
+Also note that this exports a `MagicString` instance, so you need to call [magicstring's `.toString()`](https://github.com/Rich-Harris/magic-string#stostring) on it.
 
 ```js
 import { minify } from 'esbuild-minify-templates';
@@ -123,6 +127,18 @@ import { minify } from 'esbuild-minify-templates';
 const result = minify('let a = `x     y`;');
 
 console.log(result.toString()); // 'let a = `x y`;'
+```
+
+### HTML code strings
+
+In situations where you have HTML code as a plain string, this package also exports a `stripWhitespace` function for standalone use.
+
+```js
+import { stripWhitespace } from 'esbuild-minify-templates';
+
+const result = stripWhitespace('x     y');
+
+console.log(result); // 'x y'
 ```
 
 ## Changelog
