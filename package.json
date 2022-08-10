@@ -23,7 +23,7 @@
     "test": "c8 --all --include=src --reporter=text --reporter=lcovonly uvu -r tsm test '\\.test\\.ts$'"
   },
   "peerDependencies": {
-    "esbuild": "^0.15.0"
+    "esbuild": "^0.13.0 || ^0.14.0 || ^0.15.0"
   },
   "dependencies": {
     "@ampproject/remapping": "^2.2.0",
