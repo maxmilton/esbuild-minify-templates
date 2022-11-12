@@ -33,7 +33,7 @@
   },
   "devDependencies": {
     "@types/estree": "1.0.0",
-    "@types/node": "18.11.7",
+    "@types/node": "18.11.9",
     "@typescript-eslint/eslint-plugin": "5.42.1",
     "@typescript-eslint/parser": "5.42.1",
     "c8": "7.12.0",
