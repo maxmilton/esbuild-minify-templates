@@ -1,5 +1,5 @@
 import remapping from '@ampproject/remapping';
-import { ESTreeMap, SKIP, walk } from 'astray';
+import { SKIP, walk, type ESTreeMap } from 'astray';
 import type { Plugin } from 'esbuild';
 import type { SourceLocation } from 'estree';
 import fs from 'fs/promises';
