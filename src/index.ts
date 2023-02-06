@@ -72,8 +72,7 @@ export function minify(code: string, opts: MinifyOptions = {}): MagicString {
     TemplateLiteral(node) {
       return ignoreLines.includes(node.loc.start.line)
         || (opts.taggedOnly
-          && node.path!.parent
-          && node.path!.parent.type !== 'TaggedTemplateExpression')
+          && node.path?.parent?.type !== 'TaggedTemplateExpression')
         ? SKIP
         : undefined;
     },
@@ -99,7 +98,7 @@ export const minifyTemplates = (opts: MinifyOptions = {}): Plugin => ({
     if (build.initialOptions.write !== false) return;
 
     build.onEnd((result) => {
-      result.outputFiles!.forEach((file, fileIndex, outputFiles) => {
+      result.outputFiles?.forEach((file, fileIndex, outputFiles) => {
         if (path.extname(file.path) !== '.js') return;
 
         const src = decodeUTF8(file.contents);
@@ -147,12 +146,14 @@ export const writeFiles = (): Plugin => ({
   setup(build) {
     if (build.initialOptions.write !== false) return;
 
-    build.onEnd(
-      (result) => Promise.all(
-        result.outputFiles!.map((file) => fs
+    build.onEnd(async (result) => {
+      if (!result.outputFiles) return;
+
+      await Promise.all(
+        result.outputFiles.map((file) => fs
           .mkdir(path.dirname(file.path), { recursive: true })
           .then(() => fs.writeFile(file.path, file.contents, 'utf8'))),
-      ) as unknown as Promise<void>, // as long as we return a Promise it's fine
-    );
+      );
+    });
   },
 });
