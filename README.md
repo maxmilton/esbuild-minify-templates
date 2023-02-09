@@ -1,4 +1,4 @@
-[![Build status](https://img.shields.io/github/workflow/status/maxmilton/esbuild-minify-templates/ci)](https://github.com/maxmilton/esbuild-minify-templates/actions)
+[![Build status](https://img.shields.io/github/actions/workflow/status/maxmilton/esbuild-minify-templates/ci.yml?branch=master)](https://github.com/maxmilton/esbuild-minify-templates/actions)
 [![Coverage status](https://img.shields.io/codeclimate/coverage/maxmilton/esbuild-minify-templates)](https://codeclimate.com/github/maxmilton/esbuild-minify-templates)
 [![NPM version](https://img.shields.io/npm/v/esbuild-minify-templates.svg)](https://www.npmjs.com/package/esbuild-minify-templates)
 [![NPM bundle size (minified + gzip)](https://img.shields.io/bundlephobia/minzip/esbuild-minify-templates.svg)](https://bundlephobia.com/result?p=esbuild-minify-templates)
