@@ -13,7 +13,7 @@ specifiers:
   eslint-config-airbnb-base: 15.0.0
   eslint-config-airbnb-typescript: 17.0.0
   eslint-plugin-import: 2.27.5
-  magic-string: ^0.27.0
+  magic-string: ^0.29.0
   meriyah: ^4.3.0
   prettier: 2.8.4
   tsm: 2.3.0
@@ -23,7 +23,7 @@ specifiers:
 dependencies:
   '@ampproject/remapping': 2.2.0
   astray: 1.1.1
-  magic-string: 0.27.0
+  magic-string: 0.29.0
   meriyah: 4.3.3
 
 devDependencies:
@@ -1781,8 +1781,8 @@ packages:
       yallist: 4.0.0
     dev: true
 
-  /magic-string/0.27.0:
-    resolution: {integrity: sha512-8UnnX2PeRAPZuN12svgR9j7M1uWMovg/CEnIwIG0LFkXSJJe4PdfUGiTGl8V9bsBHFUtfVINcSyYxd7q+kx9fA==}
+  /magic-string/0.29.0:
+    resolution: {integrity: sha512-WcfidHrDjMY+eLjlU+8OvwREqHwpgCeKVBUpQ3OhYYuvfaYCUgcbuBzappNzZvg/v8onU3oQj+BYpkOJe9Iw4Q==}
     engines: {node: '>=12'}
     dependencies:
       '@jridgewell/sourcemap-codec': 1.4.14
