@@ -28,7 +28,7 @@
   "dependencies": {
     "@ampproject/remapping": "^2.2.0",
     "astray": "^1.1.1",
-    "magic-string": "^0.29.0",
+    "magic-string": "^0.30.0",
     "meriyah": "^4.3.0"
   },
   "devDependencies": {
