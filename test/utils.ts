@@ -1,7 +1,7 @@
 import type esbuild from 'esbuild';
-import fs from 'fs';
-import os from 'os';
-import path from 'path';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
 import { decodeUTF8, encodeUTF8 } from '../src/index';
 
 type OnEndCallback = Parameters<esbuild.PluginBuild['onEnd']>[0];
@@ -12,7 +12,6 @@ export function esbuildTestHarness(
   buildOptions?: esbuild.BuildOptions,
 ): ReturnType<OnEndCallback> | undefined {
   let cb: OnEndCallback | undefined;
-  // eslint-disable-next-line no-void
   void setup({
     initialOptions: {
       write: false,
@@ -42,44 +41,54 @@ export function createMockBuildResult(
     ],
     errors: [],
     warnings: [],
+    metafile: { inputs: {}, outputs: {} },
+    mangleCache: {},
   };
 }
 
-let tmpDir: string | undefined;
+interface Context {
+  tmpDir?: string | undefined;
+}
 
-export async function createTempDir(): Promise<void> {
-  tmpDir = await fs.promises.mkdtemp(
-    path.join(os.tmpdir(), 'esbuild-minify-templates-test-'),
+export async function createTempDir(context: Context): Promise<void> {
+  if (context.tmpDir) {
+    throw new Error(
+      'Temp directory exists, did you forget to call deleteTempDir()',
+    );
+  }
+
+  context.tmpDir = await fs.promises.mkdtemp(
+    path.join(os.tmpdir(), 'git-ref-test-'),
   );
 }
 
-export async function deleteTempDir(): Promise<void> {
-  if (!tmpDir) {
+export async function deleteTempDir(context: Context): Promise<void> {
+  if (!context.tmpDir) {
     throw new Error(
       'No temp directory exists, you need to call createTempDir() first',
     );
   }
 
-  await fs.promises.rm(tmpDir, {
+  await fs.promises.rm(context.tmpDir, {
     force: true,
     recursive: true,
   });
 
-  tmpDir = undefined;
+  context.tmpDir = undefined;
 }
 
-export function getTempDir(subDir?: string): string {
-  if (!tmpDir) {
+export function getTempDir(context: Context, subDir?: string): string {
+  if (!context.tmpDir) {
     throw new Error(
       'No temp directory exists, you need to call createTempDir() first',
     );
   }
 
   if (subDir) {
-    const newDir = path.join(tmpDir, subDir);
+    const newDir = path.join(context.tmpDir, subDir);
     fs.mkdirSync(newDir);
     return newDir;
   }
 
-  return tmpDir;
+  return context.tmpDir;
 }

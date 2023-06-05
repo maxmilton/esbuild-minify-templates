@@ -1,11 +1,13 @@
+/// <reference types="node" />
+
 import remapping from '@ampproject/remapping';
 import { SKIP, walk, type ESTreeMap } from 'astray';
 import type { Plugin } from 'esbuild';
 import type { SourceLocation } from 'estree';
-import fs from 'fs/promises';
 import MagicString from 'magic-string';
 import { parse } from 'meriyah';
-import path from 'path';
+import { mkdir, writeFile } from 'node:fs/promises';
+import { dirname, extname } from 'node:path';
 
 type ESTreeMapExtra<M = ESTreeMap> = {
   [K in keyof M]: M[K] & {
@@ -60,8 +62,8 @@ export function minify(code: string, opts: MinifyOptions = {}): MagicString {
 
     onComment(type, value, _start, _end, loc) {
       if (
-        type === 'MultiLine'
-        && value.trim() === '! minify-templates-ignore'
+        type === 'MultiLine' &&
+        value.trim() === '! minify-templates-ignore'
       ) {
         ignoreLines.push(loc.end.line + 1);
       }
@@ -70,9 +72,9 @@ export function minify(code: string, opts: MinifyOptions = {}): MagicString {
 
   walk<typeof ast, void, ESTreeMapExtra>(ast, {
     TemplateLiteral(node) {
-      return ignoreLines.includes(node.loc.start.line)
-        || (opts.taggedOnly
-          && node.path?.parent?.type !== 'TaggedTemplateExpression')
+      return ignoreLines.includes(node.loc.start.line) ||
+        (opts.taggedOnly &&
+          node.path?.parent?.type !== 'TaggedTemplateExpression')
         ? SKIP
         : undefined;
     },
@@ -98,8 +100,9 @@ export const minifyTemplates = (opts: MinifyOptions = {}): Plugin => ({
     if (build.initialOptions.write !== false) return;
 
     build.onEnd((result) => {
+      // eslint-disable-next-line unicorn/no-array-for-each
       result.outputFiles?.forEach((file, fileIndex, outputFiles) => {
-        if (path.extname(file.path) !== '.js') return;
+        if (extname(file.path) !== '.js') return;
 
         const src = decodeUTF8(file.contents);
         const out = minify(src, opts);
@@ -150,9 +153,11 @@ export const writeFiles = (): Plugin => ({
       if (!result.outputFiles) return;
 
       await Promise.all(
-        result.outputFiles.map((file) => fs
-          .mkdir(path.dirname(file.path), { recursive: true })
-          .then(() => fs.writeFile(file.path, file.contents, 'utf8'))),
+        result.outputFiles.map((file) =>
+          mkdir(dirname(file.path), { recursive: true }).then(() =>
+            writeFile(file.path, file.contents, 'utf8'),
+          ),
+        ),
       );
     });
   },

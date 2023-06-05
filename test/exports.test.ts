@@ -1,7 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-
-import { test } from 'uvu';
-import * as assert from 'uvu/assert';
+import { expect, test } from 'bun:test';
 import * as allExports from '../src/index';
 
 const publicExports = [
@@ -15,32 +12,30 @@ const publicExports = [
 
 for (const [name, type] of publicExports) {
   test(`exports a "${name}" ${type}`, () => {
-    assert.ok(name in allExports, 'is exported');
-    assert.type(allExports[name], type);
+    expect(allExports).toHaveProperty(name);
+    expect(typeof allExports[name]).toBe(type);
   });
 }
 
 test('has no unexpected exports', () => {
   const exportNames = new Set(Object.keys(allExports));
-  publicExports.forEach((publicExport) => {
+  for (const publicExport of publicExports) {
     exportNames.delete(publicExport[0]);
-  });
+  }
   // Synthetic default created by esbuild at test runtime -- follows ESM spec
   // where default is an object containing references to all the named exports
   exportNames.delete('default');
-  assert.equal([...exportNames], []);
+  expect([...exportNames]).toEqual([]);
 });
 
 test('default export is undefined', () => {
-  // Runtime build (when tests run with tsm)
-  assert.type(allExports, 'object');
+  // Runtime build (when tests run with bun)
+  expect(allExports).toBeInstanceOf(Object);
   // @ts-expect-error - default doesn't exist
-  assert.is(allExports.default, undefined);
+  expect(allExports.default).toBeUndefined();
 
   // Pre-built
-  const bundle = require('../dist/index.js'); // eslint-disable-line
-  assert.type(bundle, 'object');
-  assert.is(bundle.default, undefined);
+  const bundle = import.meta.require('../dist/index.js') as { default?: unknown };
+  expect(bundle).toBeInstanceOf(Object);
+  expect(bundle.default).toBeUndefined();
 });
-
-test.run();
