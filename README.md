@@ -21,12 +21,6 @@ Tools to minify [template literal strings](https://developer.mozilla.org/en-US/d
 npm install --save-dev esbuild-minify-templates
 ```
 
-or
-
-```sh
-yarn add -D esbuild-minify-templates
-```
-
 ## Usage
 
 Add the two esbuild plugins to your build options and set the [write option](https://esbuild.github.io/api/#write) to false.
