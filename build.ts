@@ -34,5 +34,5 @@ const out2 = await esbuild.build({
   logLevel: 'debug',
 });
 
-console.log(await esbuild.analyzeMetafile(out1.metafile!));
-console.log(await esbuild.analyzeMetafile(out2.metafile!));
+if (out1.metafile) console.log(await esbuild.analyzeMetafile(out1.metafile));
+if (out2.metafile) console.log(await esbuild.analyzeMetafile(out2.metafile));
