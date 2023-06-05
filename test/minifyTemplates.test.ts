@@ -1,9 +1,8 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion, no-void */
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 
+import { expect, test } from 'bun:test';
 import type { BuildResult } from 'esbuild';
 import MagicString, { SourceMap } from 'magic-string';
-import { test } from 'uvu';
-import * as assert from 'uvu/assert';
 import { decodeUTF8, minify, minifyTemplates } from '../src/index';
 import { createMockBuildResult, esbuildTestHarness } from './utils';
 
@@ -17,7 +16,7 @@ const whitespaces = [
   ['\r', 'carriage return'],
   ['\t', 'horizontal tab'],
   ['\v', 'vertical tab'],
-  ['\u00a0', 'no-break space'], // &nbsp;
+  ['\u00A0', 'no-break space'], // &nbsp;
   ['\u1680', 'ogham space mark'],
   ['\u2000', 'en quad'],
   ['\u2001', 'em quad'],
@@ -29,19 +28,19 @@ const whitespaces = [
   ['\u2007', 'figure space'], // &numsp;
   ['\u2008', 'punctuation space'], // &puncsp;
   ['\u2009', 'thin space'], // &thinsp;
-  ['\u200a', 'hair space'],
+  ['\u200A', 'hair space'],
   ['\u2028', 'line separator'],
   ['\u2029', 'paragraph separator'],
-  ['\u202f', 'narrow no-break space'],
-  ['\u205f', 'medium mathematical space'],
+  ['\u202F', 'narrow no-break space'],
+  ['\u205F', 'medium mathematical space'],
   ['\u3000', 'ideographic space'],
-  ['\ufeff', 'zero width no-break space'],
+  ['\uFEFF', 'zero width no-break space'],
 
   // XXX: Not whitespace but worth pointing out there is also:
   // ['\u200b', 'zero-width space'],
 ];
 
-// eslint-disable-next-line no-param-reassign, no-return-assign
+// eslint-disable-next-line no-param-reassign, no-return-assign, unicorn/no-array-reduce
 const allWhitespace = whitespaces.reduce((text, [val]) => (text += val), '');
 
 function getOutput(buildResult: BuildResult, index = 0) {
@@ -50,75 +49,63 @@ function getOutput(buildResult: BuildResult, index = 0) {
 
 // Minification
 
+// eslint-disable-next-line unicorn/no-array-for-each
 whitespaces.forEach(([value, name]) => {
-  test(`reduces single ${
-    name || JSON.stringify(value)
-  } to a single space`, () => {
+  test(`reduces single ${name || JSON.stringify(value)} to a single space`, () => {
     const mockBuildResult = createMockBuildResult(`let a = \`${value}\`;`);
     void esbuildTestHarness(minifyTemplates(), mockBuildResult);
-    assert.is(getOutput(mockBuildResult), 'let a = ` `;');
+    expect(getOutput(mockBuildResult)).toBe('let a = ` `;');
   });
-  test(`reduces multiple ${
-    name || JSON.stringify(value)
-  }s to a single space`, () => {
-    const mockBuildResult = createMockBuildResult(
-      `let a = \`${value}${value}${value}\`;`,
-    );
+  test(`reduces multiple ${name || JSON.stringify(value)}s to a single space`, () => {
+    const mockBuildResult = createMockBuildResult(`let a = \`${value}${value}${value}\`;`);
     void esbuildTestHarness(minifyTemplates(), mockBuildResult);
-    assert.is(getOutput(mockBuildResult), 'let a = ` `;');
+    expect(getOutput(mockBuildResult)).toBe('let a = ` `;');
   });
 });
 
 test('reduces all whitespaces to a single space', () => {
-  const mockBuildResult = createMockBuildResult(
-    `let a = \`${allWhitespace}\`;`,
-  );
+  const mockBuildResult = createMockBuildResult(`let a = \`${allWhitespace}\`;`);
   void esbuildTestHarness(minifyTemplates(), mockBuildResult);
-  assert.is(getOutput(mockBuildResult), 'let a = ` `;');
+  expect(getOutput(mockBuildResult)).toBe('let a = ` `;');
 });
 test('does not reduce all whitespaces when escaped', () => {
-  const escapedWhitespaces = "' '' '' '\\f\\n\\r\\t\\v\\u00a0\\u1680\\u2000\\u2001\\u2002\\u2003\\u2004\\u2005\\u2006\\u2007\\u2008\\u2009\\u200a\\u2028\\u2029\\u202f\\u205f\\u3000\\ufeff";
+  const escapedWhitespaces =
+    "' '' '' '\\f\\n\\r\\t\\v\\u00a0\\u1680\\u2000\\u2001\\u2002\\u2003\\u2004\\u2005\\u2006\\u2007\\u2008\\u2009\\u200a\\u2028\\u2029\\u202f\\u205f\\u3000\\ufeff";
   const source = `let a = \`${escapedWhitespaces}\`;`;
   const mockBuildResult = createMockBuildResult(source);
   void esbuildTestHarness(minifyTemplates(), mockBuildResult);
-  assert.is(getOutput(mockBuildResult), source);
+  expect(getOutput(mockBuildResult)).toBe(source);
 });
 
 test('removes single space between tags', () => {
   const mockBuildResult = createMockBuildResult('let a = `> <`;');
   void esbuildTestHarness(minifyTemplates(), mockBuildResult);
-  assert.is(getOutput(mockBuildResult), 'let a = `><`;');
+  expect(getOutput(mockBuildResult)).toBe('let a = `><`;');
 });
 test('removes multiple whitespace between tags', () => {
-  const mockBuildResult = createMockBuildResult(
-    `let a = \`>${allWhitespace}<\`;`,
-  );
+  const mockBuildResult = createMockBuildResult(`let a = \`>${allWhitespace}<\`;`);
   void esbuildTestHarness(minifyTemplates(), mockBuildResult);
-  assert.is(getOutput(mockBuildResult), 'let a = `><`;');
+  expect(getOutput(mockBuildResult)).toBe('let a = `><`;');
 });
 test('removes space between start and <', () => {
   const mockBuildResult = createMockBuildResult('let a = ` <`;');
   void esbuildTestHarness(minifyTemplates(), mockBuildResult);
-  assert.is(getOutput(mockBuildResult), 'let a = `<`;');
+  expect(getOutput(mockBuildResult)).toBe('let a = `<`;');
 });
 test('removes multiple whitespace between start and <', () => {
-  const mockBuildResult = createMockBuildResult(
-    `let a = \`${allWhitespace}<\`;`,
-  );
+  const mockBuildResult = createMockBuildResult(`let a = \`${allWhitespace}<\`;`);
   void esbuildTestHarness(minifyTemplates(), mockBuildResult);
-  assert.is(getOutput(mockBuildResult), 'let a = `<`;');
+  expect(getOutput(mockBuildResult)).toBe('let a = `<`;');
 });
 test('removes space between > and end', () => {
   const mockBuildResult = createMockBuildResult('let a = `> `;');
   void esbuildTestHarness(minifyTemplates(), mockBuildResult);
-  assert.is(getOutput(mockBuildResult), 'let a = `>`;');
+  expect(getOutput(mockBuildResult)).toBe('let a = `>`;');
 });
 test('removes multiple whitespace between > and end', () => {
-  const mockBuildResult = createMockBuildResult(
-    `let a = \`>${allWhitespace}\`;`,
-  );
+  const mockBuildResult = createMockBuildResult(`let a = \`>${allWhitespace}\`;`);
   void esbuildTestHarness(minifyTemplates(), mockBuildResult);
-  assert.is(getOutput(mockBuildResult), 'let a = `>`;');
+  expect(getOutput(mockBuildResult)).toBe('let a = `>`;');
 });
 
 test('does not remove space between text and <', () => {
@@ -128,7 +115,7 @@ let b = \`| <\`;
 let c = \`© <\`;`;
   const mockBuildResult = createMockBuildResult(source);
   void esbuildTestHarness(minifyTemplates(), mockBuildResult);
-  assert.is(getOutput(mockBuildResult), source);
+  expect(getOutput(mockBuildResult)).toBe(source);
 });
 test('does not remove space between > and text', () => {
   const source = `
@@ -137,19 +124,19 @@ let b = \`> |\`;
 let b = \`> ©\`;`;
   const mockBuildResult = createMockBuildResult(source);
   void esbuildTestHarness(minifyTemplates(), mockBuildResult);
-  assert.is(getOutput(mockBuildResult), source);
+  expect(getOutput(mockBuildResult)).toBe(source);
 });
 test('does not remove space between > and >', () => {
   const source = 'let a = `> >`;';
   const mockBuildResult = createMockBuildResult(source);
   void esbuildTestHarness(minifyTemplates(), mockBuildResult);
-  assert.is(getOutput(mockBuildResult), source);
+  expect(getOutput(mockBuildResult)).toBe(source);
 });
 test('does not remove space between < and <', () => {
   const source = 'let a = `< <`;';
   const mockBuildResult = createMockBuildResult(source);
   void esbuildTestHarness(minifyTemplates(), mockBuildResult);
-  assert.is(getOutput(mockBuildResult), source);
+  expect(getOutput(mockBuildResult)).toBe(source);
 });
 
 // Raw template literals
@@ -157,37 +144,32 @@ test('does not remove space between < and <', () => {
 test('correctly modifies template literal on only line', () => {
   const mockBuildResult = createMockBuildResult('let a = `x   y`;');
   void esbuildTestHarness(minifyTemplates(), mockBuildResult);
-  assert.snapshot(getOutput(mockBuildResult), 'let a = `x y`;');
+  expect(getOutput(mockBuildResult)).toBe('let a = `x y`;');
 });
 test('correctly modifies template literal on first line ', () => {
   const mockBuildResult = createMockBuildResult('let a = `x   y`;\n\n');
   void esbuildTestHarness(minifyTemplates(), mockBuildResult);
-  assert.fixture(getOutput(mockBuildResult), 'let a = `x y`;\n\n');
+  expect(getOutput(mockBuildResult)).toBe('let a = `x y`;\n\n');
 });
 test('correctly modifies template literal on second line', () => {
   const mockBuildResult = createMockBuildResult('\nlet a = `x   y`;\n\n');
   void esbuildTestHarness(minifyTemplates(), mockBuildResult);
-  assert.fixture(getOutput(mockBuildResult), '\nlet a = `x y`;\n\n');
+  expect(getOutput(mockBuildResult)).toBe('\nlet a = `x y`;\n\n');
 });
 test('correctly modifies template literal on tenth line', () => {
-  const mockBuildResult = createMockBuildResult(
-    '\n\n\n\n\n\n\n\n\nlet a = `x   y`;\n\n\n',
-  );
+  const mockBuildResult = createMockBuildResult('\n\n\n\n\n\n\n\n\nlet a = `x   y`;\n\n\n');
   void esbuildTestHarness(minifyTemplates(), mockBuildResult);
-  assert.fixture(
-    getOutput(mockBuildResult),
-    '\n\n\n\n\n\n\n\n\nlet a = `x y`;\n\n\n',
-  );
+  expect(getOutput(mockBuildResult)).toBe('\n\n\n\n\n\n\n\n\nlet a = `x y`;\n\n\n');
 });
 test('correctly modifies multi-line template literal on first line', () => {
   const mockBuildResult = createMockBuildResult('let a = `x\n\n\ny`;');
   void esbuildTestHarness(minifyTemplates(), mockBuildResult);
-  assert.fixture(getOutput(mockBuildResult), 'let a = `x y`;');
+  expect(getOutput(mockBuildResult)).toBe('let a = `x y`;');
 });
 test('correctly modifies multi-line template literal on second line', () => {
   const mockBuildResult = createMockBuildResult('\nlet a = `x\n\n\ny`;\n\n');
   void esbuildTestHarness(minifyTemplates(), mockBuildResult);
-  assert.fixture(getOutput(mockBuildResult), '\nlet a = `x y`;\n\n');
+  expect(getOutput(mockBuildResult)).toBe('\nlet a = `x y`;\n\n');
 });
 
 // Tagged template literals
@@ -196,37 +178,32 @@ test('correctly modifies multi-line template literal on second line', () => {
 test('correctly modifies tagged template literal on only line', () => {
   const mockBuildResult = createMockBuildResult('let a = h`x   y`;');
   void esbuildTestHarness(minifyTemplates(), mockBuildResult);
-  assert.snapshot(getOutput(mockBuildResult), 'let a = h`x y`;');
+  expect(getOutput(mockBuildResult)).toBe('let a = h`x y`;');
 });
 test('correctly modifies tagged template literal on first line ', () => {
   const mockBuildResult = createMockBuildResult('let a = h`x   y`;\n\n');
   void esbuildTestHarness(minifyTemplates(), mockBuildResult);
-  assert.fixture(getOutput(mockBuildResult), 'let a = h`x y`;\n\n');
+  expect(getOutput(mockBuildResult)).toBe('let a = h`x y`;\n\n');
 });
 test('correctly modifies tagged template literal on second line', () => {
   const mockBuildResult = createMockBuildResult('\nlet a = h`x   y`;\n\n');
   void esbuildTestHarness(minifyTemplates(), mockBuildResult);
-  assert.fixture(getOutput(mockBuildResult), '\nlet a = h`x y`;\n\n');
+  expect(getOutput(mockBuildResult)).toBe('\nlet a = h`x y`;\n\n');
 });
 test('correctly modifies tagged template literal on tenth line', () => {
-  const mockBuildResult = createMockBuildResult(
-    '\n\n\n\n\n\n\n\n\nlet a = h`x   y`;\n\n\n',
-  );
+  const mockBuildResult = createMockBuildResult('\n\n\n\n\n\n\n\n\nlet a = h`x   y`;\n\n\n');
   void esbuildTestHarness(minifyTemplates(), mockBuildResult);
-  assert.fixture(
-    getOutput(mockBuildResult),
-    '\n\n\n\n\n\n\n\n\nlet a = h`x y`;\n\n\n',
-  );
+  expect(getOutput(mockBuildResult)).toBe('\n\n\n\n\n\n\n\n\nlet a = h`x y`;\n\n\n');
 });
 test('correctly modifies multi-line tagged template literal on first line', () => {
   const mockBuildResult = createMockBuildResult('let a = h`x\n\n\ny`;');
   void esbuildTestHarness(minifyTemplates(), mockBuildResult);
-  assert.fixture(getOutput(mockBuildResult), 'let a = h`x y`;');
+  expect(getOutput(mockBuildResult)).toBe('let a = h`x y`;');
 });
 test('correctly modifies multi-line tagged template literal on second line', () => {
   const mockBuildResult = createMockBuildResult('\nlet a = h`x\n\n\ny`;\n\n');
   void esbuildTestHarness(minifyTemplates(), mockBuildResult);
-  assert.fixture(getOutput(mockBuildResult), '\nlet a = h`x y`;\n\n');
+  expect(getOutput(mockBuildResult)).toBe('\nlet a = h`x y`;\n\n');
 });
 
 // Nested template literals
@@ -238,11 +215,8 @@ let b = \`
 \${h\`x   y\`}
    \`;`);
   void esbuildTestHarness(minifyTemplates(), mockBuildResult);
-  assert.snapshot(
-    getOutput(mockBuildResult),
-    // eslint-disable-next-line no-template-curly-in-string
-    '\nlet b = ` ${`x y`} ${h`x y`} `;',
-  );
+  // eslint-disable-next-line no-template-curly-in-string
+  expect(getOutput(mockBuildResult)).toBe('\nlet b = ` ${`x y`} ${h`x y`} `;');
 });
 
 // Plain strings
@@ -255,7 +229,7 @@ let c = 'x\t\t\ty';
 let d = '   <br>   <br>   <br>   ';`;
   const mockBuildResult = createMockBuildResult(source);
   void esbuildTestHarness(minifyTemplates(), mockBuildResult);
-  assert.fixture(getOutput(mockBuildResult), source);
+  expect(getOutput(mockBuildResult)).toBe(source);
 });
 test('does not modify non-template string with double quotes', () => {
   const source = `
@@ -265,7 +239,7 @@ let c = "x\t\t\ty";
 let d = "   <br>   <br>   <br>   ";`;
   const mockBuildResult = createMockBuildResult(source);
   void esbuildTestHarness(minifyTemplates(), mockBuildResult);
-  assert.fixture(getOutput(mockBuildResult), source);
+  expect(getOutput(mockBuildResult)).toBe(source);
 });
 
 // "Ignore comment" feature
@@ -293,9 +267,7 @@ codeEditor.setContent(\`
   }
 \`);`);
   void esbuildTestHarness(minifyTemplates(), mockBuildResult);
-  assert.fixture(
-    getOutput(mockBuildResult),
-    `
+  expect(getOutput(mockBuildResult)).toBe(`
 /*! minify-templates-ignore */
 let re1 = new RegExp(\`   <-- \${commentMsg}\`, 'gm');
 let re2 = new RegExp(\`<-- \${commentMsg}\`, 'gm');
@@ -307,8 +279,7 @@ codeEditor.setContent(\`
     color: coral;
   }
 \`);
-codeEditor.setContent(\` body { font-size: 20px; color: coral; } \`);`,
-  );
+codeEditor.setContent(\` body { font-size: 20px; color: coral; } \`);`);
 });
 
 test('does not modify nested template literals when parent has an ignore comment', () => {
@@ -323,8 +294,7 @@ let b = \`
 \${h\`x   y\`}
    \`;`);
   void esbuildTestHarness(minifyTemplates(), mockBuildResult);
-  assert.fixture(
-    getOutput(mockBuildResult),
+  expect(getOutput(mockBuildResult)).toBe(
     `
 /*! minify-templates-ignore */
 let a = \`
@@ -341,18 +311,12 @@ let a = h\`x   y\`;
 let b = h\`x\n\n\ny\`;
 let c = h\`x\t\t\ty\`;
 let d = h\`   <br>   <br>   <br>   \`;`);
-  void esbuildTestHarness(
-    minifyTemplates({ taggedOnly: true }),
-    mockBuildResult,
-  );
-  assert.fixture(
-    getOutput(mockBuildResult),
-    `
+  void esbuildTestHarness(minifyTemplates({ taggedOnly: true }), mockBuildResult);
+  expect(getOutput(mockBuildResult)).toBe(`
 let a = h\`x y\`;
 let b = h\`x y\`;
 let c = h\`x y\`;
-let d = h\`<br><br><br>\`;`,
-  );
+let d = h\`<br><br><br>\`;`);
 });
 
 test('does not modify non-tagged template literals when taggedOnly is true', () => {
@@ -362,11 +326,8 @@ let b = \`x\n\n\ny\`;
 let c = \`x\t\t\ty\`;
 let d = \`   <br>   <br>   <br>   \`;`;
   const mockBuildResult = createMockBuildResult(source);
-  void esbuildTestHarness(
-    minifyTemplates({ taggedOnly: true }),
-    mockBuildResult,
-  );
-  assert.fixture(getOutput(mockBuildResult), source);
+  void esbuildTestHarness(minifyTemplates({ taggedOnly: true }), mockBuildResult);
+  expect(getOutput(mockBuildResult)).toBe(source);
 });
 
 // HTML comments
@@ -380,10 +341,7 @@ let c = \`<!--\t\t\t-->\`;
 let d = \`   <!--<br>   <br>   <br>-->   \`;`;
   const mockBuildResult = createMockBuildResult(source);
   void esbuildTestHarness(minifyTemplates(), mockBuildResult);
-  assert.fixture(
-    getOutput(mockBuildResult),
-    '\nlet a = ``;\nlet b = ``;\nlet c = ``;\nlet d = ``;',
-  );
+  expect(getOutput(mockBuildResult)).toBe('\nlet a = ``;\nlet b = ``;\nlet c = ``;\nlet d = ``;');
   delete process.env.MINIFY_HTML_COMMENTS;
 });
 
@@ -395,10 +353,7 @@ let c = \`<!--\t\t\t-->\`;
 let d = \`   <!--<br>   <br>   <br>-->   \`;`;
   const mockBuildResult = createMockBuildResult(source);
   void esbuildTestHarness(minifyTemplates(), mockBuildResult);
-  assert.fixture(
-    getOutput(mockBuildResult),
-    '\nlet a = ``;\nlet b = ``;\nlet c = ``;\nlet d = ``;',
-  );
+  expect(getOutput(mockBuildResult)).toBe('\nlet a = ``;\nlet b = ``;\nlet c = ``;\nlet d = ``;');
 });
 test('removes HTML comments when keepComments is false', () => {
   const source = `
@@ -407,14 +362,8 @@ let b = \`<!--\n\n\n-->\`;
 let c = \`<!--\t\t\t-->\`;
 let d = \`   <!--<br>   <br>   <br>-->   \`;`;
   const mockBuildResult = createMockBuildResult(source);
-  void esbuildTestHarness(
-    minifyTemplates({ keepComments: false }),
-    mockBuildResult,
-  );
-  assert.fixture(
-    getOutput(mockBuildResult),
-    '\nlet a = ``;\nlet b = ``;\nlet c = ``;\nlet d = ``;',
-  );
+  void esbuildTestHarness(minifyTemplates({ keepComments: false }), mockBuildResult);
+  expect(getOutput(mockBuildResult)).toBe('\nlet a = ``;\nlet b = ``;\nlet c = ``;\nlet d = ``;');
 });
 test('does not remove HTML comments when keepComments is true', () => {
   const source = `
@@ -423,12 +372,8 @@ let b = \`<!--\n\n\n-->\`;
 let c = \`<!--\t\t\t-->\`;
 let d = \`   <!--<br>   <br>   <br>-->   \`;`;
   const mockBuildResult = createMockBuildResult(source);
-  void esbuildTestHarness(
-    minifyTemplates({ keepComments: true }),
-    mockBuildResult,
-  );
-  assert.fixture(
-    getOutput(mockBuildResult),
+  void esbuildTestHarness(minifyTemplates({ keepComments: true }), mockBuildResult);
+  expect(getOutput(mockBuildResult)).toBe(
     '\nlet a = `<!-- -->`;\nlet b = `<!-- -->`;\nlet c = `<!-- -->`;\nlet d = `<!--<br><br><br>-->`;',
   );
 });
@@ -438,7 +383,7 @@ let d = \`   <!--<br>   <br>   <br>-->   \`;`;
 test('minifies module javascript', () => {
   const mockBuildResult = createMockBuildResult('export const a = `x   y`;');
   void esbuildTestHarness(minifyTemplates(), mockBuildResult);
-  assert.fixture(getOutput(mockBuildResult), 'export const a = `x y`;');
+  expect(getOutput(mockBuildResult)).toBe('export const a = `x y`;');
 });
 
 // JS sourcemaps
@@ -460,10 +405,12 @@ test('generates a new sourcemap', () => {
     ],
     errors: [],
     warnings: [],
+    metafile: { inputs: {}, outputs: {} },
+    mangleCache: {},
   };
   void esbuildTestHarness(minifyTemplates(), mockBuildResult);
-  assert.is.not(getOutput(mockBuildResult, 1), '');
-  assert.not.equal(getOutput(mockBuildResult, 1), map);
+  expect(getOutput(mockBuildResult, 1)).not.toBe('');
+  expect(getOutput(mockBuildResult, 1)).not.toBe(map);
 });
 
 test('generated sourcemap is loosely valid', () => {
@@ -483,12 +430,14 @@ test('generated sourcemap is loosely valid', () => {
     ],
     errors: [],
     warnings: [],
+    metafile: { inputs: {}, outputs: {} },
+    mangleCache: {},
   };
   void esbuildTestHarness(minifyTemplates(), mockBuildResult);
-  assert.is(mockBuildResult.outputFiles[1].path.endsWith('mock.js.map'), true);
+  expect(mockBuildResult.outputFiles[1].path).toEndWith('mock.js.map');
   const returnedMap = JSON.parse(getOutput(mockBuildResult, 1)) as SourceMap;
-  assert.is(returnedMap.version, 3);
-  assert.ok(returnedMap.mappings);
+  expect(returnedMap.version).toBe(3);
+  expect(returnedMap.mappings).toBeTruthy();
 });
 
 // TODO:
@@ -547,22 +496,20 @@ const mixedCodeMin = `
 test('returns correct result in complex code', () => {
   const mockBuildResult = createMockBuildResult(mixedCodeSrc);
   void esbuildTestHarness(minifyTemplates(), mockBuildResult);
-  assert.fixture(getOutput(mockBuildResult), mixedCodeMin);
+  expect(getOutput(mockBuildResult)).toBe(mixedCodeMin);
 });
 
 test('minify matches minifyTemplates result in complex code', () => {
   const returned = minify(mixedCodeSrc);
-  assert.fixture(returned.toString(), mixedCodeMin);
+  expect(returned.toString()).toBe(mixedCodeMin);
 });
 
 // `stage1` templates (`h` tagged template literals)
 
 test('removes space around stage1 node ref tag', () => {
-  const mockBuildResult = createMockBuildResult(
-    'let view = h`<div> #a </div>`;',
-  );
+  const mockBuildResult = createMockBuildResult('let view = h`<div> #a </div>`;');
   void esbuildTestHarness(minifyTemplates(), mockBuildResult);
-  assert.snapshot(getOutput(mockBuildResult), 'let view = h`<div>#a</div>`;');
+  expect(getOutput(mockBuildResult)).toBe('let view = h`<div>#a</div>`;');
 });
 
 test('removes space before stage1 node ref tag in nested HTML tag', () => {
@@ -573,10 +520,7 @@ test('removes space before stage1 node ref tag in nested HTML tag', () => {
       </div>
     \`;`);
   void esbuildTestHarness(minifyTemplates(), mockBuildResult);
-  assert.snapshot(
-    getOutput(mockBuildResult),
-    '\nlet view = h`<div><br>#a</div>`;',
-  );
+  expect(getOutput(mockBuildResult)).toBe('\n    let view = h`<div><br>#a</div>`;');
 });
 
 test('removes space after stage1 node ref tag in nested HTML tag', () => {
@@ -587,21 +531,13 @@ test('removes space after stage1 node ref tag in nested HTML tag', () => {
       </div>
     \`;`);
   void esbuildTestHarness(minifyTemplates(), mockBuildResult);
-  assert.snapshot(
-    getOutput(mockBuildResult),
-    '\nlet view = h`<div>#a<br></div>`;',
-  );
+  expect(getOutput(mockBuildResult)).toBe('\n    let view = h`<div>#a<br></div>`;');
 });
 
 test('does not remove space around stage1 node ref tag with invalid ref', () => {
-  const mockBuildResult = createMockBuildResult(
-    ' let view = h`<div> #a b </div>`;',
-  );
+  const mockBuildResult = createMockBuildResult(' let view = h`<div> #a b </div>`;');
   void esbuildTestHarness(minifyTemplates(), mockBuildResult);
-  assert.snapshot(
-    getOutput(mockBuildResult),
-    'let view = h`<div> #a b </div>`;',
-  );
+  expect(getOutput(mockBuildResult)).toBe(' let view = h`<div> #a b </div>`;');
 });
 
 const stage1TemplateSrc = `
@@ -626,17 +562,18 @@ let view = h\`
     </nav>
   </header>
 \`;`;
-const stage1TemplateMin = '\nlet view = h`<header><nav><h1 #title></h1><a href=#>#link1</a><a href=# #a >#link2</a><a href=#>#link3</a><div> #not a ref </div></nav></header>`;';
+const stage1TemplateMin =
+  '\nlet view = h`<header><nav><h1 #title></h1><a href=#>#link1</a><a href=# #a >#link2</a><a href=#>#link3</a><div> #not a ref </div></nav></header>`;';
 
 test('removes spaces correctly in complex stage1 template', () => {
   const mockBuildResult = createMockBuildResult(stage1TemplateSrc);
   void esbuildTestHarness(minifyTemplates(), mockBuildResult);
-  assert.fixture(getOutput(mockBuildResult), stage1TemplateMin);
+  expect(getOutput(mockBuildResult)).toBe(stage1TemplateMin);
 });
 
 test('minify matches minifyTemplates result in complex stage1 template', () => {
   const returned = minify(stage1TemplateSrc);
-  assert.fixture(returned.toString(), stage1TemplateMin);
+  expect(returned.toString()).toBe(stage1TemplateMin);
 });
 
 // NOOP
@@ -649,7 +586,7 @@ let c = \`x\t\t\ty\`;
 let d = \`   <br>   <br>   <br>   \`;`;
   const mockBuildResult = createMockBuildResult(source);
   void esbuildTestHarness(minifyTemplates(), mockBuildResult, { write: true });
-  assert.fixture(getOutput(mockBuildResult), source);
+  expect(getOutput(mockBuildResult)).toBe(source);
 });
 test('does not modify output when build write is undefined', () => {
   const source = `
@@ -662,7 +599,5 @@ let d = \`   <br>   <br>   <br>   \`;`;
   void esbuildTestHarness(minifyTemplates(), mockBuildResult, {
     write: undefined,
   });
-  assert.fixture(getOutput(mockBuildResult), source);
+  expect(getOutput(mockBuildResult)).toBe(source);
 });
-
-test.run();

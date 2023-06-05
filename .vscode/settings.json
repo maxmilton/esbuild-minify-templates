@@ -1,11 +1,26 @@
 {
-  "editor.codeActionsOnSave": [
-    "source.sortImports",
-    "source.fixAll.format",
-    "source.fixAll.eslint"
-  ],
+  "editor.codeActionsOnSave": {
+    "source.fixAll": true
+  },
   "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "editor.formatOnSave": false,
+  "editor.formatOnPaste": false,
+  "editor.formatOnSave": true,
+  "editor.formatOnType": false,
+  "eslint.lintTask.options": "--ignore-path .gitignore",
   "git.branchProtection": ["master"],
-  "js/ts.implicitProjectConfig.checkJs": true
+  "js/ts.implicitProjectConfig.checkJs": true,
+  "prettier.ignorePath": ".gitignore",
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "[javascript]": {
+    "editor.codeActionsOnSave": {
+      "source.sortImports": true,
+      "source.fixAll": true
+    }
+  },
+  "[typescript]": {
+    "editor.codeActionsOnSave": {
+      "source.sortImports": true,
+      "source.fixAll": true
+    }
+  }
 }
