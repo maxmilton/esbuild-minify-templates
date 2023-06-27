@@ -14,7 +14,7 @@ jobs:
       - uses: oven-sh/setup-bun@v1
         with:
           bun-version: latest
-      - run: bun install
+      - run: bun install --frozen-lockfile
       - run: bun run build
       - run: bun run test
       # FIXME: Enable coverage reporting once bun test supports it; https://github.com/oven-sh/bun/issues/2311
@@ -35,6 +35,6 @@ jobs:
       - uses: oven-sh/setup-bun@v1
         with:
           bun-version: latest
-      - run: bun install
+      - run: bun install --frozen-lockfile
       - run: bun run build
       - run: bun run lint
