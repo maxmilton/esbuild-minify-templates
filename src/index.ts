@@ -39,10 +39,7 @@ export function stripWhitespace(html: string, keepComments?: boolean): string {
     .replace(/> </g, '><')
     // remove space between edge and start/end tags
     .replace(/^ </g, '<')
-    .replace(/> $/g, '>')
-    // remove space around stage1 "node ref tags"
-    // https://github.com/MaxMilton/stage1
-    .replace(/> #(\w+) </g, '>#$1<');
+    .replace(/> $/g, '>');
 
   if (!keepComments) {
     out = out.replace(/<!--.*?-->/gs, '');
