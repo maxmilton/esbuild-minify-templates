@@ -13,17 +13,18 @@ module.exports = {
   },
   extends: [
     'eslint:recommended',
-    'plugin:@typescript-eslint/eslint-recommended',
     'airbnb-base',
     'airbnb-typescript/base',
-    'plugin:@typescript-eslint/recommended',
-    'plugin:@typescript-eslint/recommended-requiring-type-checking',
+    'plugin:@typescript-eslint/strict-type-checked',
+    'plugin:@typescript-eslint/stylistic-type-checked',
     'plugin:unicorn/recommended',
     'prettier',
   ],
   plugins: ['prettier'],
   rules: {
     '@typescript-eslint/explicit-module-boundary-types': ERROR,
+    '@typescript-eslint/no-confusing-void-expression': WARN,
+    'import/order': OFF, // broken with prettier
     'import/prefer-default-export': OFF,
     'no-restricted-syntax': OFF,
     'no-void': OFF,
