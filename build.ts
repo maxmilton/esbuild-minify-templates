@@ -15,7 +15,7 @@ const out1 = await esbuild.build({
   bundle: true,
   sourcemap: true,
   minify: true,
-  metafile: true && process.stdout.isTTY,
+  metafile: process.stdout.isTTY,
   logLevel: 'debug',
 });
 
@@ -30,7 +30,7 @@ const out2 = await esbuild.build({
   bundle: true,
   sourcemap: true,
   minify: true,
-  metafile: true && process.stdout.isTTY,
+  metafile: process.stdout.isTTY,
   logLevel: 'debug',
 });
 

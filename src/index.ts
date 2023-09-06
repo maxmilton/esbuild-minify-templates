@@ -70,10 +70,12 @@ export function minify(code: string, opts: MinifyOptions = {}): MagicString {
     },
   });
 
-  walk<typeof ast, void, ESTreeMapExtra>(ast, {
+  walk<typeof ast, never, ESTreeMapExtra>(ast, {
     TemplateLiteral(node) {
       return ignoreLines.includes(node.loc.start.line) ||
         (opts.taggedOnly &&
+          // TODO: Remove lint exception once astray types are fixed
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
           node.path?.parent?.type !== 'TaggedTemplateExpression')
         ? SKIP
         : undefined;
