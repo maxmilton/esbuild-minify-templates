@@ -34,6 +34,7 @@ export function createMockBuildResult(
       {
         path: path.join(dirPath, fileName),
         contents: encodeUTF8(content),
+        hash: 'xxxx',
         get text() {
           return decodeUTF8(this.contents);
         },
