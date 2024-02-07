@@ -145,4 +145,4 @@ MIT license. See [LICENSE](https://github.com/maxmilton/esbuild-minify-templates
 
 ---
 
-© 2023 [Max Milton](https://maxmilton.com)
+© 2024 [Max Milton](https://maxmilton.com)
