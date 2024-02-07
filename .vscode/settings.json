@@ -1,26 +1,24 @@
 {
   "editor.codeActionsOnSave": {
-    "source.fixAll": true
+    "source.fixAll": "explicit"
   },
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnPaste": false,
   "editor.formatOnSave": true,
   "editor.formatOnType": false,
   "eslint.lintTask.options": "--ignore-path .gitignore",
   "git.branchProtection": ["master"],
   "js/ts.implicitProjectConfig.checkJs": true,
-  "prettier.ignorePath": ".gitignore",
+  "prettier.enable": false, // use biome instead
   "typescript.tsdk": "node_modules/typescript/lib",
-  "[javascript]": {
-    "editor.codeActionsOnSave": {
-      "source.sortImports": true,
-      "source.fixAll": true
-    }
+
+  "[json][jsonc][markdown]": {
+    "editor.defaultFormatter": "biomejs.biome"
   },
-  "[typescript]": {
+  "[javascript][typescript]": {
     "editor.codeActionsOnSave": {
-      "source.sortImports": true,
-      "source.fixAll": true
-    }
+      "source.sortImports": "explicit",
+      "source.fixAll": "explicit",
+    },
+    "editor.defaultFormatter": "biomejs.biome"
   }
 }
