@@ -20,7 +20,7 @@
     "lint:fmt": "biome format .",
     "lint:js": "eslint --ignore-path .gitignore --ext .ts,.js,.mjs,.cjs .",
     "lint:ts": "tsc --noEmit",
-    "postbuild": "tsc --emitDeclarationOnly -p tsconfig.dts.json",
+    "postbuild": "tsc --emitDeclarationOnly --declaration --declarationDir dist src/index.ts",
     "prebuild": "rm -rf dist",
     "test": "bun test --coverage"
   },
