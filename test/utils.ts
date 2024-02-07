@@ -21,7 +21,7 @@ export function esbuildTestHarness(
       cb = callback;
     },
   } as esbuild.PluginBuild);
-  return cb && cb(buildResult);
+  return cb?.(buildResult);
 }
 
 export function createMockBuildResult(
@@ -53,21 +53,15 @@ interface Context {
 
 export async function createTempDir(context: Context): Promise<void> {
   if (context.tmpDir) {
-    throw new Error(
-      'Temp directory exists, did you forget to call deleteTempDir()',
-    );
+    throw new Error('Temp directory exists, did you forget to call deleteTempDir()');
   }
 
-  context.tmpDir = await fs.promises.mkdtemp(
-    path.join(os.tmpdir(), 'git-ref-test-'),
-  );
+  context.tmpDir = await fs.promises.mkdtemp(path.join(os.tmpdir(), 'git-ref-test-'));
 }
 
 export async function deleteTempDir(context: Context): Promise<void> {
   if (!context.tmpDir) {
-    throw new Error(
-      'No temp directory exists, you need to call createTempDir() first',
-    );
+    throw new Error('No temp directory exists, you need to call createTempDir() first');
   }
 
   await fs.promises.rm(context.tmpDir, {
@@ -80,9 +74,7 @@ export async function deleteTempDir(context: Context): Promise<void> {
 
 export function getTempDir(context: Context, subDir?: string): string {
   if (!context.tmpDir) {
-    throw new Error(
-      'No temp directory exists, you need to call createTempDir() first',
-    );
+    throw new Error('No temp directory exists, you need to call createTempDir() first');
   }
 
   if (subDir) {

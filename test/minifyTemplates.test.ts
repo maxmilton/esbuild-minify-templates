@@ -49,8 +49,7 @@ function getOutput(buildResult: BuildResult, index = 0) {
 
 // Minification
 
-// eslint-disable-next-line unicorn/no-array-for-each
-whitespaces.forEach(([value, name]) => {
+for (const [value, name] of whitespaces) {
   test(`reduces single ${name || JSON.stringify(value)} to a single space`, () => {
     const mockBuildResult = createMockBuildResult(`let a = \`${value}\`;`);
     void esbuildTestHarness(minifyTemplates(), mockBuildResult);
@@ -61,7 +60,7 @@ whitespaces.forEach(([value, name]) => {
     void esbuildTestHarness(minifyTemplates(), mockBuildResult);
     expect(getOutput(mockBuildResult)).toBe('let a = ` `;');
   });
-});
+}
 
 test('reduces all whitespaces to a single space', () => {
   const mockBuildResult = createMockBuildResult(`let a = \`${allWhitespace}\`;`);

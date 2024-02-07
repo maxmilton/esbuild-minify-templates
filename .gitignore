@@ -2,7 +2,6 @@
 *-lock.yaml
 *.lock
 *.log
-*.tsbuildinfo
 /coverage/
-dist
-node_modules
+/dist/
+/node_modules/

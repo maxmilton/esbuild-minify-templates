@@ -11,9 +11,7 @@
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "scripts": {
     "build": "bun build.ts",
     "lint": "bun run lint:fmt && bun run lint:js && bun run lint:ts",

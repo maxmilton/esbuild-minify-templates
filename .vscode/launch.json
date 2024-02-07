@@ -1,0 +1,21 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Attach to Bun",
+      "type": "bun",
+      "request": "attach",
+      // use `bun --inspect` to open a debug port
+      "url": "ws://localhost:6499/"
+    },
+    {
+      "name": "bun test <CURRENT_FILE>",
+      "type": "bun",
+      "request": "launch",
+      "runtimeArgs": ["test", "--preload", "${workspaceFolder}/test/setup.ts"],
+      "program": "${file}",
+      "internalConsoleOptions": "openOnSessionStart"
+    }
+    // TODO: Add a way to run all tests
+  ]
+}
