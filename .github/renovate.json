@@ -4,5 +4,6 @@
     "config:js-lib",
     "github>maxmilton/renovate-config",
     "github>maxmilton/renovate-config:monthly"
-  ]
+  ],
+  "enabled": false
 }
