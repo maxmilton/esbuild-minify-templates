@@ -86,7 +86,7 @@ If you run into a situation where you don't want a certain template literal stri
 >
 > This feature should be used as a last resort and so is currently not ergonomic to use.
 >
-> A solution for minification is to pass the output back into a second `esbuild.build()` for minify only. Or use another minification tool like [terser](https://github.com/terser/terser) which has the added benfit of generating a [1–2% smaller output](https://github.com/privatenumber/minification-benchmarks#-results) than esbuild's minification (but is much slower).
+> A solution for minification is to pass the output back into a second `esbuild.build()` for minify only. Or use another minification tool like [terser](https://github.com/terser/terser) which has the added benefit of generating a [1–2% smaller output](https://github.com/privatenumber/minification-benchmarks#-results) than esbuild's minification (but is much slower).
 
 `ignore-examples.js`:
 
@@ -145,4 +145,4 @@ MIT license. See [LICENSE](https://github.com/maxmilton/esbuild-minify-templates
 
 ---
 
-© 2024 [Max Milton](https://maxmilton.com)
+© 2025 [Max Milton](https://maxmilton.com)
