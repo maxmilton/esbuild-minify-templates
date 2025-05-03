@@ -1,13 +1,13 @@
 /// <reference types="node" />
 
+import { mkdir, writeFile } from 'node:fs/promises';
+import { dirname, extname } from 'node:path';
 import remapping from '@ampproject/remapping';
-import { SKIP, walk, type ESTreeMap } from 'astray';
+import { type ESTreeMap, SKIP, walk } from 'astray';
 import type { Plugin } from 'esbuild';
 import type { SourceLocation } from 'estree';
 import MagicString from 'magic-string';
 import { parse } from 'meriyah';
-import { mkdir, writeFile } from 'node:fs/promises';
-import { dirname, extname } from 'node:path';
 
 type ESTreeMapExtra<M = ESTreeMap> = {
   [K in keyof M]: M[K] & {
@@ -71,8 +71,6 @@ export function minify(code: string, opts: MinifyOptions = {}): MagicString {
     TemplateLiteral(node) {
       return ignoreLines.includes(node.loc.start.line) ||
         (opts.taggedOnly &&
-          // TODO: Remove lint exception once astray types are fixed
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
           node.path?.parent?.type !== 'TaggedTemplateExpression')
         ? SKIP
         : undefined;
@@ -113,7 +111,7 @@ export const minifyTemplates = (opts: MinifyOptions = {}): Plugin => ({
           (outputFile) => outputFile.path === `${file.path}.map`,
         );
 
-        if (matchingMapIndex > -1) {
+        if (matchingMapIndex !== -1) {
           const mapFile = outputFiles[matchingMapIndex];
           const remapped = remapping(
             [

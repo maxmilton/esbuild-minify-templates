@@ -1,9 +1,9 @@
-/* eslint-disable no-plusplus */
+/* eslint-disable @typescript-eslint/restrict-template-expressions, no-plusplus */
 
 import { afterAll, beforeAll, expect, test } from 'bun:test';
-import * as esbuild from 'esbuild';
 import fs from 'node:fs';
 import path from 'node:path';
+import * as esbuild from 'esbuild';
 import { minifyTemplates, writeFiles } from '../dist';
 import { createTempDir, deleteTempDir, getTempDir } from './utils';
 

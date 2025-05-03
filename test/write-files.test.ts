@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion, no-plusplus */
+/* eslint-disable @typescript-eslint/no-non-null-assertion, @typescript-eslint/restrict-template-expressions, no-plusplus */
 
 import { afterAll, beforeAll, expect, test } from 'bun:test';
 import fs from 'node:fs/promises';
@@ -17,6 +17,17 @@ beforeAll(() => createTempDir(context));
 afterAll(() => deleteTempDir(context));
 
 let count = 0;
+
+test('is a function', () => {
+  expect.assertions(2);
+  expect(writeFiles).toBeFunction();
+  expect(writeFiles).not.toBeClass();
+});
+
+test('expects 0 parameters', () => {
+  expect.assertions(1);
+  expect(writeFiles).toHaveParameters(0, 0);
+});
 
 test('writes single file to disk', async () => {
   const dir = getTempDir(context, `test${count++}`);

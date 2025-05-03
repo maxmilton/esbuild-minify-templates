@@ -1,7 +1,7 @@
-import type esbuild from 'esbuild';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import type esbuild from 'esbuild';
 import { decodeUTF8, encodeUTF8 } from '../src/index';
 
 type OnEndCallback = Parameters<esbuild.PluginBuild['onEnd']>[0];
