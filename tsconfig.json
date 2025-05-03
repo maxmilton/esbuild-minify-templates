@@ -15,10 +15,17 @@
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": false, // covered by eslint
     "noImplicitOverride": true,
+    "noUncheckedSideEffectImports": true,
     "noUnusedLocals": false, // covered by eslint
     "noUnusedParameters": false, // covered by eslint
     "verbatimModuleSyntax": true
   },
-  "include": ["src", "test", "build.ts", "*.config.ts", "*.d.ts"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "include": [
+    "*.config.mjs",
+    "*.config.ts",
+    "*.d.ts",
+    "build.ts",
+    "src",
+    "test"
+  ]
 }
