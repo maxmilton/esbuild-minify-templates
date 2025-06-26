@@ -3,31 +3,30 @@
   "editor.formatOnPaste": false,
   "editor.formatOnSave": true,
   "editor.formatOnType": false,
-  "eslint.format.enable": false,
-  "eslint.useFlatConfig": true,
+  "eslint.enable": true,
   "git.branchProtection": ["master"],
   "js/ts.implicitProjectConfig.checkJs": true,
   "prettier.enable": false, // use biome instead
   "typescript.enablePromptUseWorkspaceTsdk": true,
-  "typescript.format.enable": false,
   "typescript.tsdk": "node_modules/typescript/lib",
+  "yaml.validate": true,
 
-  "[css][html][json][jsonc][markdown][scss][xml][yaml]": {
+  "[css][html][json][jsonc][markdown]": {
     "editor.codeActionsOnSave": {
-      "source.fixAll": "explicit",
-      "quickfix.biome": "explicit"
+      "source.organizeImports": "explicit",
+      "source.fixAll": "explicit"
     },
     "editor.defaultFormatter": "biomejs.biome"
   },
   "[javascript][typescript]": {
     "editor.codeActionsOnSave": {
-      "source.sortImports": "never",
       "source.organizeImports": "never",
       "source.organizeImports.biome": "explicit",
-      "source.fixAll": "never",
-      "source.fixAll.eslint": "never",
-      "quickfix.biome": "explicit"
+      "source.fixAll": "never"
     },
     "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[yaml]": {
+    "editor.defaultFormatter": "redhat.vscode-yaml"
   }
 }

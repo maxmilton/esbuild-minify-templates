@@ -2,7 +2,10 @@
   "recommendations": [
     "biomejs.biome",
     "dbaeumer.vscode-eslint",
+    "MylesMurphy.prettify-ts",
     "oven.bun-vscode",
-    "tekumara.typos-vscode"
+    "redhat.vscode-yaml",
+    "tekumara.typos-vscode",
+    "yoavbls.pretty-ts-errors"
   ]
 }
