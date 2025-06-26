@@ -4,8 +4,8 @@ import { afterAll, beforeAll, expect, test } from 'bun:test';
 import fs from 'node:fs';
 import path from 'node:path';
 import * as esbuild from 'esbuild';
-import { minifyTemplates, writeFiles } from '../dist';
-import { createTempDir, deleteTempDir, getTempDir } from './utils';
+import { minifyTemplates, writeFiles } from '../dist/index.js';
+import { createTempDir, deleteTempDir, getTempDir } from './utils.ts';
 
 const context = {};
 beforeAll(() => createTempDir(context));

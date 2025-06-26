@@ -3,14 +3,14 @@
 import { afterAll, beforeAll, expect, test } from 'bun:test';
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import { writeFiles } from '../src/index';
+import { writeFiles } from '../src/index.ts';
 import {
   createMockBuildResult,
   createTempDir,
   deleteTempDir,
   esbuildTestHarness,
   getTempDir,
-} from './utils';
+} from './utils.ts';
 
 const context = {};
 beforeAll(() => createTempDir(context));

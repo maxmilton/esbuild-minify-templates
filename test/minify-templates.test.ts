@@ -2,9 +2,9 @@
 
 import { expect, test } from 'bun:test';
 import type { BuildResult } from 'esbuild';
-import MagicString, { SourceMap } from 'magic-string';
-import { decodeUTF8, minify, minifyTemplates } from '../src/index';
-import { createMockBuildResult, esbuildTestHarness } from './utils';
+import MagicString, { type SourceMap } from 'magic-string';
+import { decodeUTF8, minify, minifyTemplates } from '../src/index.ts';
+import { createMockBuildResult, esbuildTestHarness } from './utils.ts';
 
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions/Character_Classes
 // https://en.wikipedia.org/wiki/ASCII#Control_code_chart

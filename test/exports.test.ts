@@ -1,5 +1,5 @@
 import { expect, test } from 'bun:test';
-import * as allExports from '../src/index';
+import * as allExports from '../src/index.ts';
 
 const publicExports = [
   ['stripWhitespace', 'function'],
