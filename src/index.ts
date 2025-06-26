@@ -1,7 +1,7 @@
 /// <reference types="node" />
 
 import { mkdir, writeFile } from 'node:fs/promises';
-import { dirname, extname } from 'node:path';
+import { dirname } from 'node:path';
 import remapping from '@ampproject/remapping';
 import { type ESTreeMap, SKIP, walk } from 'astray';
 import type { Plugin } from 'esbuild';
@@ -99,7 +99,7 @@ export const minifyTemplates = (opts: MinifyOptions = {}): Plugin => ({
     build.onEnd((result) => {
       // eslint-disable-next-line unicorn/no-array-for-each
       result.outputFiles?.forEach((file, fileIndex, outputFiles) => {
-        if (extname(file.path) !== '.js') return;
+        if (!/\.[mc]?js$/.test(file.path)) return;
 
         const src = decodeUTF8(file.contents);
         const out = minify(src, opts);
