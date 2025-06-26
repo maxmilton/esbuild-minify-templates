@@ -9,6 +9,9 @@
     "skipLibCheck": true,
     "allowJs": false,
 
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+
     "strict": true,
     "allowUnreachableCode": false,
     "exactOptionalPropertyTypes": true,
@@ -20,12 +23,5 @@
     "noUnusedParameters": false, // covered by eslint
     "verbatimModuleSyntax": true
   },
-  "include": [
-    "*.config.mjs",
-    "*.config.ts",
-    "*.d.ts",
-    "build.ts",
-    "src",
-    "test"
-  ]
+  "include": ["*.config.mjs", "build.ts", "src", "test"]
 }
