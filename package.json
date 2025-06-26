@@ -2,7 +2,7 @@
   "name": "esbuild-minify-templates",
   "version": "0.11.1",
   "description": "Minify template literal strings as part of an esbuild powered build process",
-  "repository": "maxmilton/esbuild-minify-templates",
+  "repository": "github:maxmilton/esbuild-minify-templates",
   "homepage": "https://github.com/maxmilton/esbuild-minify-templates",
   "author": "Max Milton <max@happyhackers.xyz>",
   "license": "MIT",
@@ -34,16 +34,16 @@
     "meriyah": "^6.0.6"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.0.0-beta.2",
-    "@eslint/js": "9.26.0",
-    "@maxmilton/eslint-config": "0.0.9",
-    "@maxmilton/test-utils": "0.0.9",
-    "@types/bun": "1.2.11",
-    "@types/estree": "1.0.7",
-    "esbuild": "0.25.3",
-    "eslint": "9.26.0",
-    "eslint-plugin-unicorn": "59.0.0",
+    "@biomejs/biome": "2.0.5",
+    "@eslint/js": "9.29.0",
+    "@maxmilton/eslint-config": "0.2.1",
+    "@maxmilton/test-utils": "0.0.12",
+    "@types/bun": "1.2.17",
+    "@types/estree": "1.0.8",
+    "esbuild": "0.25.5",
+    "eslint": "9.29.0",
+    "eslint-plugin-unicorn": "59.0.1",
     "typescript": "5.8.3",
-    "typescript-eslint": "8.31.1"
+    "typescript-eslint": "8.35.0"
   }
 }
