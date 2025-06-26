@@ -99,7 +99,7 @@ export const minifyTemplates = (opts: MinifyOptions = {}): Plugin => ({
     build.onEnd((result) => {
       // eslint-disable-next-line unicorn/no-array-for-each
       result.outputFiles?.forEach((file, fileIndex, outputFiles) => {
-        if (!/\.(m|c)?js$/.test(file.path)) return;
+        if (!/\.[mc]?js$/.test(file.path)) return;
 
         const src = decodeUTF8(file.contents);
         const out = minify(src, opts);
