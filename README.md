@@ -1,8 +1,13 @@
-[![Build status](https://img.shields.io/github/actions/workflow/status/maxmilton/esbuild-minify-templates/ci.yml?branch=master)](https://github.com/maxmilton/esbuild-minify-templates/actions)
-[![Coverage status](https://img.shields.io/codeclimate/coverage/maxmilton/esbuild-minify-templates)](https://codeclimate.com/github/maxmilton/esbuild-minify-templates)
-[![NPM version](https://img.shields.io/npm/v/esbuild-minify-templates.svg)](https://www.npmjs.com/package/esbuild-minify-templates)
-[![NPM bundle size (minified + gzip)](https://img.shields.io/bundlephobia/minzip/esbuild-minify-templates.svg)](https://bundlephobia.com/result?p=esbuild-minify-templates)
-[![Licence](https://img.shields.io/github/license/maxmilton/esbuild-minify-templates.svg)](https://github.com/maxmilton/esbuild-minify-templates/blob/master/LICENSE)
+[![CI status](https://badgen.net/github/checks/maxmilton/esbuild-minify-templates?label=ci)](https://github.com/maxmilton/esbuild-minify-templates/actions)
+[![Coverage %](https://badgen.net/codeclimate/coverage/maxmilton/esbuild-minify-templates)](https://codeclimate.com/github/maxmilton/esbuild-minify-templates)
+[![NPM version](https://badgen.net/npm/v/esbuild-minify-templates)](https://www.npmjs.com/package/esbuild-minify-templates)
+[![Licence](https://badgen.net/github/license/maxmilton/esbuild-minify-templates)](./LICENSE)
+
+<!-- TODO: Migrate to badgen.net once it supports qlty.sh -->
+<!-- [![Coverage %](https://qlty.sh/badges/479705f2-7b40-4a67-8cda-f69d283a4cc5/test_coverage.svg)](https://qlty.sh/gh/maxmilton/projects/esbuild-minify-templates) -->
+
+[![Minified size](https://badgen.net/bundlephobia/minzip/esbuild-minify-templates)](https://bundlephobia.com/package/esbuild-minify-templates)
+![Dependency count](https://badgen.net/bundlephobia/dependency-count/esbuild-minify-templates)
 
 # esbuild-minify-templates
 
