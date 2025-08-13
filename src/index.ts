@@ -2,7 +2,7 @@
 
 import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname } from 'node:path';
-import remapping from '@ampproject/remapping';
+import remapping from '@jridgewell/remapping';
 import { type ESTreeMap, SKIP, walk } from 'astray';
 import type { Plugin } from 'esbuild';
 import type { SourceLocation } from 'estree';
