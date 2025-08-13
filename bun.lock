@@ -23,7 +23,7 @@
         "typescript-eslint": "8.39.1",
       },
       "peerDependencies": {
-        "esbuild": ">0.25.9",
+        "esbuild": ">=0.13.0 <1.0.0",
       },
     },
   },
