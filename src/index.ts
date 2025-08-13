@@ -1,13 +1,13 @@
 /// <reference types="node" />
 
-import { mkdir, writeFile } from 'node:fs/promises';
-import { dirname } from 'node:path';
-import remapping from '@jridgewell/remapping';
-import { type ESTreeMap, SKIP, walk } from 'astray';
-import type { Plugin } from 'esbuild';
-import type { SourceLocation } from 'estree';
-import MagicString from 'magic-string';
-import { parse } from 'meriyah';
+import { mkdir, writeFile } from "node:fs/promises";
+import { dirname } from "node:path";
+import remapping from "@jridgewell/remapping";
+import { type ESTreeMap, SKIP, walk } from "astray";
+import type { Plugin } from "esbuild";
+import type { SourceLocation } from "estree";
+import MagicString from "magic-string";
+import { parse } from "meriyah";
 
 type ESTreeMapExtra<M = ESTreeMap> = {
   [K in keyof M]: M[K] & {
@@ -33,16 +33,21 @@ export const decodeUTF8 = (bytes: Uint8Array): string => decoder.decode(bytes);
 
 export function stripWhitespace(html: string, keepComments?: boolean): string {
   let out = html
-    // reduce whitespace to a single space
-    .replace(/\s+/gm, ' ')
-    // remove space between tags
-    .replace(/> </g, '><')
-    // remove space between edge and start/end tags
-    .replace(/^ </g, '<')
-    .replace(/> $/g, '>');
+    // Reduce whitespace to a single space
+    .replace(/\s+/gm, " ")
+    // Remove space between tags
+    .replace(/> </g, "><")
+    // Remove space between edge and start/end tags
+    .replace(/^ </g, "<")
+    .replace(/> $/g, ">");
 
   if (!keepComments) {
-    out = out.replace(/<!--.*?-->/gs, '');
+    // Remove comments, repeatedly until none remain
+    let prev: string;
+    do {
+      prev = out;
+      out = out.replace(/(?:<!--[\s\S]*?-->)+/g, "");
+    } while (out !== prev);
   }
 
   return out;
@@ -58,10 +63,7 @@ export function minify(code: string, opts: MinifyOptions = {}): MagicString {
     module: true,
 
     onComment(type, value, _start, _end, loc) {
-      if (
-        type === 'MultiLine' &&
-        value.trim() === '! minify-templates-ignore'
-      ) {
+      if (type === "MultiLine" && value.trim() === "! minify-templates-ignore") {
         ignoreLines.push(loc.end.line + 1);
       }
     },
@@ -70,8 +72,7 @@ export function minify(code: string, opts: MinifyOptions = {}): MagicString {
   walk<typeof ast, never, ESTreeMapExtra>(ast, {
     TemplateLiteral(node) {
       return ignoreLines.includes(node.loc.start.line) ||
-        (opts.taggedOnly &&
-          node.path?.parent?.type !== 'TaggedTemplateExpression')
+        (opts.taggedOnly && node.path?.parent?.type !== "TaggedTemplateExpression")
         ? SKIP
         : undefined;
     },
@@ -79,11 +80,7 @@ export function minify(code: string, opts: MinifyOptions = {}): MagicString {
       const { start, end } = node.loc;
 
       if (start.line !== end.line || start.column !== end.column) {
-        out.overwrite(
-          node.start,
-          node.end,
-          stripWhitespace(node.value.raw, opts.keepComments),
-        );
+        out.overwrite(node.start, node.end, stripWhitespace(node.value.raw, opts.keepComments));
       }
     },
   });
@@ -92,7 +89,7 @@ export function minify(code: string, opts: MinifyOptions = {}): MagicString {
 }
 
 export const minifyTemplates = (opts: MinifyOptions = {}): Plugin => ({
-  name: 'minify-templates',
+  name: "minify-templates",
   setup(build) {
     if (build.initialOptions.write !== false) return;
 
@@ -115,7 +112,7 @@ export const minifyTemplates = (opts: MinifyOptions = {}): Plugin => ({
           const mapFile = outputFiles[matchingMapIndex];
           const remapped = remapping(
             [
-              // our source map from minifying
+              // Our source map from minifying
               {
                 ...out.generateDecodedMap({
                   source: file.path,
@@ -127,14 +124,12 @@ export const minifyTemplates = (opts: MinifyOptions = {}): Plugin => ({
               // esbuild generated source map
               decodeUTF8(mapFile.contents),
             ],
-            // don't load other source maps; referenced files are the original source
+            // Don't load other source maps; referenced files are the original source
             () => null,
           );
 
           // eslint-disable-next-line no-param-reassign
-          outputFiles[matchingMapIndex].contents = encodeUTF8(
-            remapped.toString(),
-          );
+          outputFiles[matchingMapIndex].contents = encodeUTF8(remapped.toString());
         }
       });
     });
@@ -142,7 +137,7 @@ export const minifyTemplates = (opts: MinifyOptions = {}): Plugin => ({
 });
 
 export const writeFiles = (): Plugin => ({
-  name: 'write-files',
+  name: "write-files",
   setup(build) {
     if (build.initialOptions.write !== false) return;
 
@@ -152,7 +147,7 @@ export const writeFiles = (): Plugin => ({
       await Promise.all(
         result.outputFiles.map((file) =>
           mkdir(dirname(file.path), { recursive: true }).then(() =>
-            writeFile(file.path, file.contents, 'utf8'),
+            writeFile(file.path, file.contents, "utf8"),
           ),
         ),
       );

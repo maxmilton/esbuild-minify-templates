@@ -28,22 +28,22 @@
     "esbuild": ">=0.13.0 <1.0.0"
   },
   "dependencies": {
-    "@jridgewell/remapping": "^2.3.0",
+    "@jridgewell/remapping": "^2.3.5",
     "astray": "^1.1.1",
     "magic-string": "^0.30.17",
-    "meriyah": "^6.0.6"
+    "meriyah": "^6.1.4"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.0.5",
-    "@eslint/js": "9.29.0",
+    "@biomejs/biome": "2.1.4",
+    "@eslint/js": "9.33.0",
     "@maxmilton/eslint-config": "0.2.1",
     "@maxmilton/test-utils": "0.0.12",
-    "@types/bun": "1.2.17",
+    "@types/bun": "1.2.20",
     "@types/estree": "1.0.8",
-    "esbuild": "0.25.5",
-    "eslint": "9.29.0",
-    "eslint-plugin-unicorn": "59.0.1",
-    "typescript": "5.8.3",
-    "typescript-eslint": "8.35.0"
+    "esbuild": "0.25.9",
+    "eslint": "9.33.0",
+    "eslint-plugin-unicorn": "60.0.0",
+    "typescript": "5.9.2",
+    "typescript-eslint": "8.39.1"
   }
 }

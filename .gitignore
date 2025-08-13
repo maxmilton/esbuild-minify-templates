@@ -2,7 +2,7 @@
 *-lock.yaml
 *.bak
 *.lock
-!bun.lock
+!/bun.lock
 /coverage/
 /dist/
 /node_modules/

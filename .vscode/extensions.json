@@ -7,5 +7,6 @@
     "redhat.vscode-yaml",
     "tekumara.typos-vscode",
     "yoavbls.pretty-ts-errors"
-  ]
+  ],
+  "unwantedRecommendations": ["dprint.dprint", "esbenp.prettier-vscode"]
 }

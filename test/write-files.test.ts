@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion, @typescript-eslint/restrict-template-expressions, no-plusplus */
 
-import { afterAll, beforeAll, expect, test } from 'bun:test';
-import fs from 'node:fs/promises';
-import path from 'node:path';
-import { writeFiles } from '../src/index.ts';
+import { afterAll, beforeAll, expect, test } from "bun:test";
+import fs from "node:fs/promises";
+import path from "node:path";
+import { writeFiles } from "../src/index.ts";
 import {
   createMockBuildResult,
   createTempDir,
   deleteTempDir,
   esbuildTestHarness,
   getTempDir,
-} from './utils.ts';
+} from "./utils.ts";
 
 const context = {};
 beforeAll(() => createTempDir(context));
@@ -18,39 +18,39 @@ afterAll(() => deleteTempDir(context));
 
 let count = 0;
 
-test('is a function', () => {
+test("is a function", () => {
   expect.assertions(2);
   expect(writeFiles).toBeFunction();
   expect(writeFiles).not.toBeClass();
 });
 
-test('expects 0 parameters', () => {
+test("expects 0 parameters", () => {
   expect.assertions(1);
   expect(writeFiles).toHaveParameters(0, 0);
 });
 
-test('writes single file to disk', async () => {
+test("writes single file to disk", async () => {
   const dir = getTempDir(context, `test${count++}`);
-  const filename = 'mock.txt';
-  const text = 'abc';
+  const filename = "mock.txt";
+  const text = "abc";
   const mockBuildResult = createMockBuildResult(text, dir, filename);
   await esbuildTestHarness(writeFiles(), mockBuildResult);
   const result = await Bun.file(path.join(dir, filename)).text();
   expect(result).toBe(text);
 });
 
-test('writes multiple files to disk', async () => {
+test("writes multiple files to disk", async () => {
   const dir = getTempDir(context, `test${count++}`);
-  const filename1 = 'mock.js';
-  const filename2 = 'mock.js.map';
-  const filename3 = 'mock.css';
-  const filename4 = 'mock.css.map';
-  const filename5 = 'mock.html';
-  const text1 = 'file1';
-  const text2 = 'file2';
-  const text3 = 'file3';
-  const text4 = 'file4';
-  const text5 = 'file5';
+  const filename1 = "mock.js";
+  const filename2 = "mock.js.map";
+  const filename3 = "mock.css";
+  const filename4 = "mock.css.map";
+  const filename5 = "mock.html";
+  const text1 = "file1";
+  const text2 = "file2";
+  const text3 = "file3";
+  const text4 = "file4";
+  const text5 = "file5";
   const mockBuildResult = {
     outputFiles: [
       createMockBuildResult(text1, dir, filename1).outputFiles![0],
@@ -75,26 +75,26 @@ test('writes multiple files to disk', async () => {
   expect(result).toEqual([text1, text2, text3, text4, text5]);
 });
 
-test('correctly writes UTF-8 encoded text', async () => {
+test("correctly writes UTF-8 encoded text", async () => {
   const dir = getTempDir(context, `test${count++}`);
-  const filename = 'mock.txt';
-  const text = 'a\u00A0b\u2003c\u3000d 🤔👾💣';
+  const filename = "mock.txt";
+  const text = "a\u00A0b\u2003c\u3000d 🤔👾💣";
   const mockBuildResult = createMockBuildResult(text, dir, filename);
   await esbuildTestHarness(writeFiles(), mockBuildResult);
   const result = await Bun.file(path.join(dir, filename)).text();
   expect(result).toBe(text);
 });
 
-test('creates directories before writing files', async () => {
+test("creates directories before writing files", async () => {
   const dir = getTempDir(context, `test${count++}`);
-  const filename1 = 'dir1/file1.txt';
-  const filename2 = 'dir1/dir2/file2.txt';
-  const filename3 = 'dir3/dir4/dir5/file3.txt';
+  const filename1 = "dir1/file1.txt";
+  const filename2 = "dir1/dir2/file2.txt";
+  const filename3 = "dir3/dir4/dir5/file3.txt";
   const mockBuildResult = {
     outputFiles: [
-      createMockBuildResult('', dir, filename1).outputFiles![0],
-      createMockBuildResult('', dir, filename2).outputFiles![0],
-      createMockBuildResult('', dir, filename3).outputFiles![0],
+      createMockBuildResult("", dir, filename1).outputFiles![0],
+      createMockBuildResult("", dir, filename2).outputFiles![0],
+      createMockBuildResult("", dir, filename3).outputFiles![0],
     ],
     errors: [],
     warnings: [],
@@ -103,9 +103,9 @@ test('creates directories before writing files', async () => {
   };
   await esbuildTestHarness(writeFiles(), mockBuildResult);
   const result = await Promise.all([
-    fs.stat(path.join(dir, 'dir1')),
-    fs.stat(path.join(dir, 'dir1/dir2')),
-    fs.stat(path.join(dir, 'dir3/dir4/dir5')),
+    fs.stat(path.join(dir, "dir1")),
+    fs.stat(path.join(dir, "dir1/dir2")),
+    fs.stat(path.join(dir, "dir3/dir4/dir5")),
     fs.stat(path.join(dir, filename1)),
     fs.stat(path.join(dir, filename2)),
     fs.stat(path.join(dir, filename3)),
@@ -124,19 +124,19 @@ test('creates directories before writing files', async () => {
   expect(result[5].isSymbolicLink()).toBe(false);
 });
 
-test('does not write files when build write is true', async () => {
+test("does not write files when build write is true", async () => {
   const dir = getTempDir(context, `test${count++}`);
-  const filename = 'mock.txt';
-  const mockBuildResult = createMockBuildResult('', dir, filename);
+  const filename = "mock.txt";
+  const mockBuildResult = createMockBuildResult("", dir, filename);
   await esbuildTestHarness(writeFiles(), mockBuildResult, { write: true });
   const files = await fs.readdir(dir);
   expect(files).toHaveLength(0);
 });
 
-test('does not write files when build write is undefined', async () => {
+test("does not write files when build write is undefined", async () => {
   const dir = getTempDir(context, `test${count++}`);
-  const filename = 'mock.txt';
-  const mockBuildResult = createMockBuildResult('', dir, filename);
+  const filename = "mock.txt";
+  const mockBuildResult = createMockBuildResult("", dir, filename);
   // @ts-expect-error - undefined is the default value
   await esbuildTestHarness(writeFiles(), mockBuildResult, { write: undefined });
   const files = await fs.readdir(dir);

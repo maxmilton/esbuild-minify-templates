@@ -1,4 +1,4 @@
-import '@maxmilton/test-utils/extend';
+import "@maxmilton/test-utils/extend";
 
 const noop = () => {};
 

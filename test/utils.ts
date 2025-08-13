@@ -1,10 +1,10 @@
-import fs from 'node:fs';
-import os from 'node:os';
-import path from 'node:path';
-import type esbuild from 'esbuild';
-import { decodeUTF8, encodeUTF8 } from '../src/index.ts';
+import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
+import type esbuild from "esbuild";
+import { decodeUTF8, encodeUTF8 } from "../src/index.ts";
 
-type OnEndCallback = Parameters<esbuild.PluginBuild['onEnd']>[0];
+type OnEndCallback = Parameters<esbuild.PluginBuild["onEnd"]>[0];
 
 export function esbuildTestHarness(
   { setup }: esbuild.Plugin,
@@ -26,15 +26,15 @@ export function esbuildTestHarness(
 
 export function createMockBuildResult(
   content: string,
-  dirPath = '.',
-  fileName = 'mock.js',
+  dirPath = ".",
+  fileName = "mock.js",
 ): esbuild.BuildResult {
   return {
     outputFiles: [
       {
         path: path.join(dirPath, fileName),
         contents: encodeUTF8(content),
-        hash: 'xxxx',
+        hash: "xxxx",
         get text() {
           return decodeUTF8(this.contents);
         },
@@ -53,15 +53,15 @@ interface Context {
 
 export async function createTempDir(context: Context): Promise<void> {
   if (context.tmpDir) {
-    throw new Error('Temp directory exists, did you forget to call deleteTempDir()');
+    throw new Error("Temp directory exists, did you forget to call deleteTempDir()");
   }
 
-  context.tmpDir = await fs.promises.mkdtemp(path.join(os.tmpdir(), 'git-ref-test-'));
+  context.tmpDir = await fs.promises.mkdtemp(path.join(os.tmpdir(), "git-ref-test-"));
 }
 
 export async function deleteTempDir(context: Context): Promise<void> {
   if (!context.tmpDir) {
-    throw new Error('No temp directory exists, you need to call createTempDir() first');
+    throw new Error("No temp directory exists, you need to call createTempDir() first");
   }
 
   await fs.promises.rm(context.tmpDir, {
@@ -74,7 +74,7 @@ export async function deleteTempDir(context: Context): Promise<void> {
 
 export function getTempDir(context: Context, subDir?: string): string {
   if (!context.tmpDir) {
-    throw new Error('No temp directory exists, you need to call createTempDir() first');
+    throw new Error("No temp directory exists, you need to call createTempDir() first");
   }
 
   if (subDir) {

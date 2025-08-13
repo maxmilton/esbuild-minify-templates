@@ -33,12 +33,12 @@ Add the two esbuild plugins to your build options and set the [write option](htt
 `build.mjs`:
 
 ```js
-import esbuild from 'esbuild';
-import { minifyTemplates, writeFiles } from 'esbuild-minify-templates';
+import esbuild from "esbuild";
+import { minifyTemplates, writeFiles } from "esbuild-minify-templates";
 
 await esbuild.build({
-  entryPoints: ['src/index.ts'],
-  outfile: 'dist/index.js',
+  entryPoints: ["src/index.ts"],
+  outfile: "dist/index.js",
   plugins: [minifyTemplates(), writeFiles()], // <--
   bundle: true,
   sourcemap: true,
@@ -53,7 +53,7 @@ If you only want to minify templates in certain builds, set the [esbuild `write`
 ```js
 esbuild.build({
   ...
-  write: process.env.NODE_ENV !== 'production',
+  write: process.env.NODE_ENV !== "production",
 })
 ```
 
@@ -99,7 +99,7 @@ If you run into a situation where you don't want a certain template literal stri
 // Dynamically constructed regular expression
 
 /*! minify-templates-ignore */
-const re = new RegExp(`    <-- ${commentMsg}`, 'g');
+const re = new RegExp(`    <-- ${commentMsg}`, "g");
 
 // String where whitespace is meaningful
 
@@ -121,11 +121,11 @@ You can also do template literal minification separately. The `minify` function 
 Also note that this exports a `MagicString` instance, so you need to call [magicstring's `.toString()`](https://github.com/Rich-Harris/magic-string#stostring) on it.
 
 ```js
-import { minify } from 'esbuild-minify-templates';
+import { minify } from "esbuild-minify-templates";
 
-const result = minify('let a = `x     y`;');
+const result = minify("let a = `x     y`;");
 
-console.log(result.toString()); // 'let a = `x y`;'
+console.log(result.toString()); // "let a = `x y`;"
 ```
 
 ### HTML code strings
@@ -133,11 +133,11 @@ console.log(result.toString()); // 'let a = `x y`;'
 In situations where you have HTML code as a plain string, this package also exports a `stripWhitespace` function for standalone use.
 
 ```js
-import { stripWhitespace } from 'esbuild-minify-templates';
+import { stripWhitespace } from "esbuild-minify-templates";
 
-const result = stripWhitespace('x     y');
+const result = stripWhitespace("x     y");
 
-console.log(result); // 'x y'
+console.log(result); // "x y"
 ```
 
 ## Changelog
@@ -146,7 +146,7 @@ See [releases on GitHub](https://github.com/maxmilton/esbuild-minify-templates/r
 
 ## Licence
 
-MIT license. See [LICENSE](https://github.com/maxmilton/esbuild-minify-templates/blob/master/LICENSE).
+MIT license. See [LICENSE](./LICENSE).
 
 ---
 
