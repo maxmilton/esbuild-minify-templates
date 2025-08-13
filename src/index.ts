@@ -42,7 +42,7 @@ export function stripWhitespace(html: string, keepComments?: boolean): string {
     .replace(/> $/g, ">");
 
   if (!keepComments) {
-    out = out.replace(/<!--.*?-->/gs, "");
+    out = out.replace(/(?:<!--[\s\S]*?-->)+/g, "");
   }
 
   return out;
