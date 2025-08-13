@@ -28,7 +28,7 @@
     "esbuild": ">=0.13.0 <1.0.0"
   },
   "dependencies": {
-    "@ampproject/remapping": "^2.3.0",
+    "@jridgewell/remapping": "^2.3.0",
     "astray": "^1.1.1",
     "magic-string": "^0.30.17",
     "meriyah": "^6.0.6"
