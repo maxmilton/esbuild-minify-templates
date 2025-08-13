@@ -13,7 +13,7 @@ jobs:
       - name: Check valid version tag
         run: |
           [[ "${{ github.ref }}" =~ ^refs/tags/v[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9.-]+)? ]] || exit 1
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
