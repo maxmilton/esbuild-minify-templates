@@ -40,7 +40,7 @@
     "@maxmilton/test-utils": "0.0.12",
     "@types/bun": "1.2.20",
     "@types/estree": "1.0.8",
-    "esbuild": "0.25.9",
+    "esbuild": "0.28.1",
     "eslint": "9.33.0",
     "eslint-plugin-unicorn": "60.0.0",
     "typescript": "5.9.2",
